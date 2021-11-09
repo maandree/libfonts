@@ -2,6 +2,8 @@
 #ifndef LIBFONTS_H
 #define LIBFONTS_H
 
+#include <stdint.h>
+
 
 enum libfonts_antialiasing {
 	LIBFONTS_ANTIALIASING_NONE,
