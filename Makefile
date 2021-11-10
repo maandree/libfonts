@@ -17,7 +17,8 @@ LIB_NAME = fonts
 
 
 OBJ =\
-	libfonts_calculate_subpixel_order.o
+	libfonts_calculate_subpixel_order.o\
+	libfonts_get_output_dpi.o
 
 HDR =\
 	libfonts.h

@@ -87,8 +87,8 @@ enum libfonts_orientation {
 };
 
 struct libfonts_rendering_settings {
-	uint16_t deci_dpi_x;
-	uint16_t deci_dpi_y;
+	double dpi_x; /* actually pixels rather than dots */
+	double dpi_y;
 	enum libfonts_antialiasing horizontal_grey_text_antialiasing;
 	enum libfonts_antialiasing vertical_grey_text_antialiasing;
 	enum libfonts_antialiasing diagonal_grey_text_antialiasing;
@@ -107,8 +107,8 @@ struct libfonts_output {
 	int output_screen;
 	enum libfonts_orientation physical_screen_orientation;
 	enum libfonts_subpixel_order unrotated_subpixel_order;
-	uint16_t deci_dpi_x;
-	uint16_t deci_dpi_y;
+	double dpi_x;
+	double dpi_y;
 	struct libfonts_rendering_settings *rendering_settings;
 };
 
