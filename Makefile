@@ -16,7 +16,8 @@ LIB_VERSION = $(LIB_MAJOR).$(LIB_MINOR)
 LIB_NAME = fonts
 
 
-OBJ =
+OBJ =\
+	libfonts_calculate_subpixel_order.o
 
 HDR =\
 	libfonts.h

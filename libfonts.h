@@ -20,7 +20,7 @@ enum libfonts_subpixel_order {
 
 	/* For any value V, a rotation of 90⋅R degrees, R integer,
 	 * clockwise, of the physical output, will yeild a subpixel
-	 * order represented with the value (V + R) Mod 4 + ⌊V / 4⌋,
+	 * order represented with the value (V + R) Mod 4 + 4⋅⌊V / 4⌋,
 	 * if V ≥ 4, otherwise V asis. A rotation that is not
 	 * divisible by 90 degrees, will yeild the subpixel order
 	 * LIBFONTS_SUBPIXEL_ORDER_NONLINEAR if V is greater or equal
