@@ -309,7 +309,7 @@ struct libfonts_font_description {
 
 int libfonts_encode_font_description(const struct libfonts_font_description *, char[static 256]);
 int libfonts_decode_font_description(struct libfonts_font_description *, const char *);
-int libfonts_do_font_descriptions_match(const char *, const char *);
+int libfonts_do_font_descriptions_match(const char * /* no wildcards */, const char * /* wildcards allowed */);
 
 int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *);
 int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *);
