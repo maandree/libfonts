@@ -18,6 +18,7 @@ LIB_NAME = fonts
 
 OBJ =\
 	libfonts_calculate_subpixel_order.o\
+	libfonts_decode_font_description.o\
 	libfonts_encode_font_description.o\
 	libfonts_get_output_dpi.o
 
