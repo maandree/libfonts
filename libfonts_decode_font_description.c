@@ -118,7 +118,8 @@ fix_charset_subset(char *out, const char *in)
 	saved = ranges[0];
 	for (i = 1; i < n; i++) {
 		if (ranges[i].first <= saved.last) {
-			saved.last = ranges[i].last;
+			if (ranges[i].last > saved.last)
+				saved.last = ranges[i].last;
 		} else {
 			if (saved.first == saved.last)
 				out += sprintf(out, "%"PRId32" ", saved.first);
