@@ -41,6 +41,7 @@ $(LOBJ): $(HDR)
 libfonts.a: $(OBJ)
 	@rm -f -- $@
 	$(AR) rc $@ $(OBJ)
+	$(AR) ts $@ > /dev/null
 
 libfonts.$(LIBEXT): $(LOBJ)
 	$(CC) $(LIBFLAGS) -o $@ $(LOBJ) $(LDFLAGS)
@@ -50,6 +51,7 @@ install: libfonts.a libfonts.$(LIBEXT)
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/include"
 	cp -- libfonts.a "$(DESTDIR)$(PREFIX)/lib/"
 	cp -- libfonts.$(LIBEXT) "$(DESTDIR)$(PREFIX)/lib/libfonts.$(LIBMINOREXT)"
+	$(FIX_INSTALL_NAME) "$(DESTDIR)$(PREFIX)/lib/libfonts.$(LIBMINOREXT)"
 	ln -sf -- libfonts.$(LIBMINOREXT) "$(DESTDIR)$(PREFIX)/lib/libfonts.$(LIBMAJOREXT)"
 	ln -sf -- libfonts.$(LIBMAJOREXT) "$(DESTDIR)$(PREFIX)/lib/libfonts.$(LIBEXT)"
 	cp -- libfonts.h "$(DESTDIR)$(PREFIX)/include/"
