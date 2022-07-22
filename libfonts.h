@@ -26,6 +26,12 @@ enum libfonts_antialiasing {
 	LIBFONTS_ANTIALIASING_GREYSCALE,
 
 	/**
+	 * Use greyscale-antialiasing regardless
+	 * of other settings
+	 */
+	LIBFONTS_ANTIALIASING_GREYSCALE_FORCED,
+
+	/**
 	 * Use subpixel rendering
 	 */
 	LIBFONTS_ANTIALIASING_SUBPIXEL,
