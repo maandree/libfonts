@@ -145,6 +145,25 @@ struct libfonts_rendering_settings {
 	enum libfonts_subpixel_order subpixel_order;
 
 	/**
+	 * If the product of the applicable pixel densities
+	 * (horizontal and vertical) is less than this
+	 * value, the antialiasing mode shall downgrade
+	 * to `LIBFONTS_ANTIALIASING_NONE` if it is
+	 * `LIBFONTS_ANTIALIASING_GREYSCALE` or
+	 * `LIBFONTS_ANTIALIASING_SUBPIXEL`
+	 */
+	double min_dpsqi_for_greyscale;
+
+	/**
+	 * If the product of the applicable pixel densities
+	 * (horizontal and vertical) is less than this
+	 * value, the antialiasing mode shall downgrade
+	 * to `LIBFONTS_ANTIALIASING_GREYSCALE` if it is
+	 * `LIBFONTS_ANTIALIASING_SUBPIXEL`
+	 */
+	double min_dpsqi_for_subpixel;
+
+	/**
 	 * Antialiasing mode for horizontal (on unrotated output), grey text
 	 */
 	enum libfonts_antialiasing horizontal_grey_text_antialiasing;
