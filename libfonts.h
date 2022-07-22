@@ -112,7 +112,7 @@ struct libfonts_rendering_settings {
 	 * The output device's horizontal pixel density,
 	 * in pixels (not dots) per inch, for the reference
 	 * width, without output transformations applied,
-	 * zero if not applicable or unknown
+	 * 0 if not specified
 	 */
 	double dpi_x;
 
@@ -120,9 +120,29 @@ struct libfonts_rendering_settings {
 	 * The output device's vertical pixel density,
 	 * in pixels (not dots) per inch, for the reference
 	 * height, without output transformations applied,
-	 * zero if not applicable or unknown
+	 * 0 if not specified
 	 */
 	double dpi_y;
+
+	/**
+	 * The width, in pixels, that `.dpi_x` is calculated
+	 * for; if 0, `dpi_x` shall apply regardless of
+	 * current resolution and transformations
+	 */
+	uint32_t reference_width;
+
+	/**
+	 * The height, in pixels, that `.dpi_y` is calculated
+	 * for; if 0, `.dpi_y` shall apply regardless of
+	 * current resolution and transformations
+	 */
+	uint32_t reference_height;
+
+	/**
+	 * The output device's physical subpixel order,
+	 * when it is not rotated
+	 */
+	enum libfonts_subpixel_order subpixel_order;
 
 	/**
 	 * Antialiasing mode for horizontal (on unrotated output), grey text
@@ -157,17 +177,6 @@ struct libfonts_rendering_settings {
 	 * unrotated output), non-grey text
 	 */
 	enum libfonts_antialiasing diagonal_colour_text_antialiasing;
-
-	/**
-	 * The output device's physical subpixel order, when it is
-	 * not rotated
-	 */
-	enum libfonts_subpixel_order unrotated_subpixel_order;
-
-	/**
-	 * TODO
-	 */
-	struct libfonts_transformation default_transformation;
 };
 
 
@@ -495,7 +504,9 @@ int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descr
  * Get the rendering settings to use for output devices
  * without any specific rendering settings configured
  * 
- * @param   settings  Output parameter for the rendering settings
+ * @param   settings  Output parameter for the rendering settings;
+ *                    `settings->dpi_x` and `settings->dpi_y` will
+ *                    have a fallback value assigned if configured to 0
  * @return            1 if rendering settings where found,
  *                    0 otherwise (`*settings` will be filled with fallback values),
  *                    -1 on failure
