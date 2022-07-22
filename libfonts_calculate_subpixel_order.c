@@ -1,27 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "libfonts.h"
-
-
-#define TOLERANCE 0.000001
-
-
-static void
-transform(double *x_out, double *y_out, double x, double y, const struct libfonts_transformation *transformation)
-{
-	double a = transformation->m[0][0], b = transformation->m[0][1], c = transformation->m[0][2];
-	double d = transformation->m[1][0], e = transformation->m[1][1], f = transformation->m[1][2];
-	double g = transformation->m[2][0], h = transformation->m[2][1], i = transformation->m[2][2];
-	double w = g*x + h*y + i;
-	*x_out = (a*x + b*y + c) / w;
-	*y_out = (d*x + e*y + f) / w;
-}
-
-
-static int
-eq(double a, double b)
-{
-	return b - TOLERANCE <= a && a <= b + TOLERANCE;
-}
+#include "common.h"
 
 
 enum libfonts_subpixel_order

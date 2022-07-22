@@ -23,6 +23,7 @@ OBJ =\
 	libfonts_get_output_dpi.o
 
 HDR =\
+	common.h\
 	libfonts.h
 
 LOBJ = $(OBJ:.o=.lo)

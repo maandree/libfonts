@@ -42,8 +42,8 @@ enum libfonts_subpixel_order {
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_OTHER,
 
-	LIBFONTS_SUBPIXEL_ORDER_RGB,
-	LIBFONTS_SUBPIXEL_ORDER_R_G_B, /* vertically stacked horizontal stripes */
+	LIBFONTS_SUBPIXEL_ORDER_RGB, /* horizontal stacked vertically stripes, red to the left, blue to the right */
+	LIBFONTS_SUBPIXEL_ORDER_R_G_B, /* vertically stacked horizontal stripes, red at the top, blue at the bottom */
 	LIBFONTS_SUBPIXEL_ORDER_BGR,
 	LIBFONTS_SUBPIXEL_ORDER_B_G_R,
 
@@ -225,14 +225,24 @@ struct libfonts_output {
 	int32_t output_y;
 
 	/**
-	 * The output's width, in pixels
+	 * The output's width, in pixels, on the screen
 	 */
 	uint32_t output_width;
 
 	/**
-	 * The output's height, in pixels
+	 * The output's height, in pixels, on the screen
 	 */
 	uint32_t output_height;
+
+	/**
+	 * The output's width, in pixels, before transformation is applied
+	 */
+	uint32_t unrotated_output_width;
+
+	/**
+	 * The output's height, in pixels, before transformation is applied
+	 */
+	uint32_t unrotated_output_height;
 
 	/**
 	 * The index of the screen the output belongs to
@@ -240,9 +250,9 @@ struct libfonts_output {
 	int output_screen;
 
 	/**
-	 * The rotation of the output
+	 * Transformation that is applied to the output
 	 */
-	enum libfonts_orientation physical_screen_orientation;
+	struct libfonts_transformation output_transformation;
 
 	/**
 	 * The output's subpixel order, disregarding applied rotation
@@ -251,19 +261,23 @@ struct libfonts_output {
 
 	/**
 	 * The output's horizontal pixel density (pixels per inch),
-	 * zero if not applicable or unknown
+	 * zero if not applicable or unknown, after transformation
+	 * is applied
 	 * 
-	 * This `.output_width` divided by the output's physical
-	 * width in inches
+	 * This `.unrotated_output_width` divided by the output's
+	 * physical width in inches, with `.output_transformation`
+	 * than applied
 	 */
 	double dpi_x;
 
 	/**
 	 * The output's vertical pixel density (pixels per inch),
-	 * zero if not applicable or unknown
+	 * zero if not applicable or unknown, after transformation
+	 * is applied
 	 * 
-	 * This `.output_height` divided by the output's physical
-	 * height in inches
+	 * This `.unrotated_output_height` divided by the output's
+	 * physical height in inches, with `.output_transformation`
+	 * than applied
 	 */
 	double dpi_y;
 
@@ -489,15 +503,20 @@ int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *,
  * The output pixel density is only approximate because
  * the EDID has limited dimension resolution
  * 
- * @param   output  Output device information, `.output_width` and `.output_height`
- *                  must already be set; this function will set `.dpi_x` and `.dpi_y`
+ * @param   output  Output device information, `.unrotated_output_width`,
+ *                  `.unrotated_output_height`, and `.output_transformation` must
+ *                  already be set; this function will set `.dpi_x` and `.dpi_y`
  *                  (both will be set to zero if the function returns zero)
- * @param   edid    The output device's EDID, in hexadecimal representation
+ * @param   edid    The output device's EDID, in hexadecimal representation;
+ *                  if `NULL`, `output->unrotated_output_width` and
+ *                  `output->unrotated_output_height` need not be set, instead
+ *                  `output->dpi_x` and `output->dpi_y` must be set to the
+ *                  pixel density before the `output->output_transformation`
+ *                  is applied
  * @return          1 if a pixel density was calculated,
  *                  0 otherwise (projector or unsupported EDID)
  */
 int libfonts_get_output_dpi(struct libfonts_output *, const char *);
-/* TODO should take transformation into account */
 
 /**
  * Calculate the subpixel order on an output device after

@@ -1,8 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "libfonts.h"
-#include <ctype.h>
-#include <errno.h>
-#include <string.h>
+#include "common.h"
 
 #define LIST_FIELDS(X)\
 	X(foundry)\
