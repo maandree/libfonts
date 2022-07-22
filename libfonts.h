@@ -446,14 +446,75 @@ struct libfonts_font_description {
 };
 
 
+/**
+ * Encode an X Logical Font Description (XLFD) string
+ *
+ * @param   desc  The font description to encode
+ * @param   out   Output buffer for the font description string
+ * @return        0 on successful completion, -1 on failure
+ * 
+ * @throws  EINVAL  Invalid font description
+ */
 int libfonts_encode_font_description(const struct libfonts_font_description *, char[static 256]);
-int libfonts_decode_font_description(struct libfonts_font_description *, const char *);
-int libfonts_do_font_descriptions_match(const char * /* no wildcards */, const char * /* wildcards allowed */);
-int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_description * /* no wildcards */,
-                                                const struct libfonts_font_description * /* wildcards allowed */);
 
+/**
+ * Decode an X Logical Font Description (XLFD) string
+ *
+ * @param   desc  Output parameter for the font description
+ * @param   in    The font description string to decode
+ * @return        0 on successful completion, -1 on failure
+ * 
+ * @throws  EINVAL  Invalid font description
+ */
+int libfonts_decode_font_description(struct libfonts_font_description *, const char *);
+
+/**
+ * Check if an X Logical Font Description (XLFD) matches
+ * a font specification
+ * 
+ * @param   desc  The font description to test, may not include wildcards
+ * @param   spec  The specification to test the description against, may include wildcards
+ * @return        1 if the arguments match, 0 if they don't match
+ */
+int libfonts_do_font_descriptions_match(const char *, const char *);
+/* TODO implement libfonts_do_font_descriptions_match */
+
+/**
+ * Check if an X Logical Font Description (XLFD) matches
+ * a font specification
+ * 
+ * @param   desc  The font description to test, may not include wildcards
+ * @param   spec  The specification to test the description against, may include wildcards
+ * @return        1 if the arguments match, 0 if they don't match
+ */
+int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_description *, const struct libfonts_font_description *);
+/* TODO implement libfonts_do_decoded_font_descriptions_match */
+
+
+/**
+ * Get the rendering settings to use for output devices
+ * without any specific rendering settings configured
+ * 
+ * @param   settings  Output parameter for the rendering settings
+ * @return            1 if rendering settings where found,
+ *                    0 otherwise (`*settings` will be filled with fallback values),
+ *                    -1 on failure
+ */
 int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *);
+/* TODO implement libfonts_get_default_rendering_settings */
+
+/**
+ * Get rendering settings specified for a specific output device
+ * 
+ * @param   settings  Output parameter for the rendering settings
+ * @param   name      The EDID (or other identifier) of the output
+ * @return            1 if rendering settings where found,
+ *                    0 otherwise (`*settings` will be unmodified),
+ *                    -1 on failure
+ */
 int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *);
+/* TODO implement libfonts_get_output_rendering_settings */
+
 
 /**
  * Get an approximate pixel density for an output device
