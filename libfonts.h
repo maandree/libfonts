@@ -257,8 +257,8 @@ struct libfonts_output {
 struct libfonts_font_description {
 	/**
 	 * The font name unless the foundry is registered with X,
-	 * in which case, all following fields will be NULL.
-	 * This field is normally NULL.
+	 * in which case, all following fields will be `NULL`.
+	 * This field is normally `NULL`.
 	 * 
 	 * This field will also be used to to store the font name
 	 * (including the initial "-") if it is malformated.
@@ -266,7 +266,7 @@ struct libfonts_font_description {
 	const char *private_font_name;
 
 	/**
-	 * Version if the XLFD used, NULL if not included in the font name
+	 * Version if the XLFD used, `NULL` if not included in the font name
 	 * (this is normally the case)
 	 */
 	const char *xlfd_version;
@@ -403,7 +403,7 @@ struct libfonts_font_description {
 	const char *charset_encoding;
 
 	/**
-	 * Character subset hint, or NULL if none
+	 * Character subset hint, or `NULL` if none
 	 * 
 	 * Will be a sorted, in ascending order, <space>-separated list of
 	 * inclusive ranges included the subset. A range will either be a
@@ -427,7 +427,7 @@ struct libfonts_font_description {
 	const char *charset_subset;
 
 	/**
-	 * "-"-separated list of unrecognised fields, NULL if none.
+	 * "-"-separated list of unrecognised fields, `NULL` if none.
 	 * Note that the empty string indicates that there was one
 	 * unrecognised fields, containing the empty string.
 	 * 
