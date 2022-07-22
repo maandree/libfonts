@@ -90,43 +90,6 @@ enum libfonts_subpixel_order {
 
 
 /**
- * Device rotation
- */
-enum libfonts_orientation {
-	/**
-	 * Unknown rotation
-	 */
-	LIBFONTS_ORIENTATION_UNKNOWN,
-
-	/**
-	 * Not rotated
-	 */
-	LIBFONTS_ORIENTATION_0_DEGREES_CLOCKWISE,
-
-	/**
-	 * Rotated 90 degrees clockwise
-	 */
-	LIBFONTS_ORIENTATION_90_DEGREES_CLOCKWISE,
-
-	/**
-	 * Rotated 180 degrees
-	 */
-	LIBFONTS_ORIENTATION_180_DEGREES_CLOCKWISE,
-
-	/**
-	 * Rotated 90 degrees counter-clockwise
-	 */
-	LIBFONTS_ORIENTATION_270_DEGREES_CLOCKWISE,
-
-	/**
-	 * Not rotated by a multiple of 90 degrees
-	 */
-	LIBFONTS_ORIENTATION_OTHER
-};
-/* TODO use affine transformations instead to account for scaling and mirroring */
-
-
-/**
  * Output transformation structure
  */
 struct libfonts_transformation {
@@ -149,17 +112,17 @@ struct libfonts_transformation {
 struct libfonts_rendering_settings {
 	/**
 	 * The output device's horizontal pixel density,
-	 * in pixels (not dots) per inch, without output
-	 * transformations applied, zero if not applicable
-	 * or unknown
+	 * in pixels (not dots) per inch, for the reference
+	 * width, without output transformations applied,
+	 * zero if not applicable or unknown
 	 */
 	double dpi_x;
 
 	/**
 	 * The output device's vertical pixel density,
-	 * in pixels (not dots) per inch, without output
-	 * transformations applied, zero if not applicable
-	 * or unknown
+	 * in pixels (not dots) per inch, for the reference
+	 * height, without output transformations applied,
+	 * zero if not applicable or unknown
 	 */
 	double dpi_y;
 
@@ -265,8 +228,8 @@ struct libfonts_output {
 	 * is applied
 	 * 
 	 * This `.unrotated_output_width` divided by the output's
-	 * physical width in inches, with `.output_transformation`
-	 * than applied
+	 * physical width in inches, with inverse of
+	 * `.output_transformation` than applied
 	 */
 	double dpi_x;
 
@@ -276,8 +239,8 @@ struct libfonts_output {
 	 * is applied
 	 * 
 	 * This `.unrotated_output_height` divided by the output's
-	 * physical height in inches, with `.output_transformation`
-	 * than applied
+	 * physical height in inches, with inverse of
+	 * `.output_transformation` than applied
 	 */
 	double dpi_y;
 
@@ -510,11 +473,12 @@ int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *,
  * @param   edid    The output device's EDID, in hexadecimal representation;
  *                  if `NULL`, `output->unrotated_output_width` and
  *                  `output->unrotated_output_height` need not be set, instead
- *                  `output->dpi_x` and `output->dpi_y` must be set to the
- *                  pixel density before the `output->output_transformation`
+ *                  `output->dpi_x` and `output->dpi_y` must be set to the pixel
+ *                  density before the inverse of `output->output_transformation`
  *                  is applied
  * @return          1 if a pixel density was calculated,
- *                  0 otherwise (projector or unsupported EDID)
+ *                  0 otherwise (projector, unsupported EDID, or
+ *                  non-invertable output transformation)
  */
 int libfonts_get_output_dpi(struct libfonts_output *, const char *);
 
