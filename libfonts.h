@@ -42,19 +42,6 @@ enum libfonts_subpixel_order {
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_OTHER,
 
-	/* For any value V, a rotation of 90⋅R degrees, R integer,
-	 * clockwise, of the physical output, will yeild a subpixel
-	 * order represented with the value (V + R) Mod 4 + 4⋅⌊V / 4⌋,
-	 * if V ≥ 4, otherwise V asis. A rotation that is not
-	 * divisible by 90 degrees, will yeild the subpixel order
-	 * LIBFONTS_SUBPIXEL_ORDER_NONLINEAR if V is greater or equal
-	 * to LIBFONTS_SUBPIXEL_ORDER_NONLINEAR, otherwise V as is */
-
-	/* The reason the subpixel order RG_GB, and similar orders
-	 * are excluded from the list is that the green segment of
-	 * the pixel is disjoint and therefore not suitable for
-	 * subpixel rendering; instead NONLINEAR should is used. */
-
 	LIBFONTS_SUBPIXEL_ORDER_RGB,
 	LIBFONTS_SUBPIXEL_ORDER_R_G_B, /* vertically stacked horizontal stripes */
 	LIBFONTS_SUBPIXEL_ORDER_BGR,
@@ -140,62 +127,86 @@ enum libfonts_orientation {
 
 
 /**
+ * Output transformation structure
+ */
+struct libfonts_transformation {
+	/**
+	 * Transformation matrix, row-major
+	 *
+	 *     ⎛.m[0][0]   .m[0][1]   .m[0][2]⎞
+	 *     ⎜.m[1][0]   .m[1][1]   .m[1][2]⎟
+	 *     ⎝.m[2][0]   .m[2][1]   .m[2][2]⎠
+	 *
+	 * Let all values be zero if it is unknown
+	 */
+	double m[3][3];
+};
+
+
+/**
  * Text rendering settings
  */
 struct libfonts_rendering_settings {
 	/**
 	 * The output device's horizontal pixel density,
 	 * in pixels (not dots) per inch, without output
-	 * rotation applied, zero if not applicable or unknown
+	 * transformations applied, zero if not applicable
+	 * or unknown
 	 */
 	double dpi_x;
 
 	/**
 	 * The output device's vertical pixel density,
 	 * in pixels (not dots) per inch, without output
-	 * rotation applied, zero if not applicable or unknown
+	 * transformations applied, zero if not applicable
+	 * or unknown
 	 */
 	double dpi_y;
 
 	/**
-	 * Antialiasing mode for horizontal, grey text
+	 * Antialiasing mode for horizontal (on unrotated output), grey text
 	 */
 	enum libfonts_antialiasing horizontal_grey_text_antialiasing;
 
 	/**
-	 * Antialiasing mode for vertical, grey text
+	 * Antialiasing mode for vertical (on unrotated output), grey text
 	 */
 	enum libfonts_antialiasing vertical_grey_text_antialiasing;
 
 	/**
-	 * Antialiasing mode for non-horizontal, non-vertical, grey text
+	 * Antialiasing mode for non-horizontal, non-vertical
+	 * (on unrotated output), grey text
 	 */
 	enum libfonts_antialiasing diagonal_grey_text_antialiasing;
 
 	/**
-	 * Antialiasing mode for horizontal, non-grey text
+	 * Antialiasing mode for horizontal (on unrotated output),
+	 * non-grey text
 	 */
 	enum libfonts_antialiasing horizontal_colour_text_antialiasing;
 
 	/**
-	 * Antialiasing mode for vertical, non-grey text
+	 * Antialiasing mode for vertical (on unrotated output),
+	 * non-grey text
 	 */
 	enum libfonts_antialiasing vertical_colour_text_antialiasing;
 
 	/**
-	 * Antialiasing mode for non-horizontal, non-vertical, non-grey text
+	 * Antialiasing mode for non-horizontal, non-vertical (on
+	 * unrotated output), non-grey text
 	 */
 	enum libfonts_antialiasing diagonal_colour_text_antialiasing;
 
 	/**
-	 * TODO
+	 * The output device's physical subpixel order, when it is
+	 * not rotated
 	 */
 	enum libfonts_subpixel_order unrotated_subpixel_order;
 
 	/**
 	 * TODO
 	 */
-	enum libfonts_orientation default_physical_screen_orientation;
+	struct libfonts_transformation default_transformation;
 };
 
 
@@ -486,16 +497,17 @@ int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *,
  *                  0 otherwise (projector or unsupported EDID)
  */
 int libfonts_get_output_dpi(struct libfonts_output *, const char *);
-/* TODO should take rotation into account */
+/* TODO should take transformation into account */
 
 /**
- * Calculate the subpixel order on an output device after a rotation is applied
+ * Calculate the subpixel order on an output device after
+ * a transformation is applied on its output
  * 
- * @param   unrotated  The device's subpixel order
- * @param   rotation   The applied rotation
- * @return             The device's logical subpixel order
+ * @param   unrotated       The device's subpixel order
+ * @param   transformation  The applied transformation
+ * @return                  The device's logical subpixel order
  */
-enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order, enum libfonts_orientation);
+enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order, const struct libfonts_transformation *);
 
 
 #endif
