@@ -28,17 +28,15 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_NONRGB,
 
 	/**
-	 * Output is an RGB output device, but
-	 * the subpixels are not ordered in a
-	 * grid of rectangles or subpixels are
-	 * disjoint
+	 * Output is an RGB output device, but the subpixels
+	 * are not ordered in a grid of rectangles or subpixels
+	 * are disjoint
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_NONLINEAR,
 
 	/**
-	 * Output is an RGB output device, but
-	 * the subpixel is non of the supported
-	 * subpixel orders
+	 * Output is an RGB output device, but the subpixel
+	 * order is not one of the supported subpixel orders
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_OTHER,
 
@@ -438,7 +436,7 @@ struct libfonts_font_description {
 	const char *unrecognised_fields;
 
 	/**
-	 * For internal use only.
+	 * For internal use only
 	 * 
 	 * Store the strings in the struct. Limited to 256
 	 * bytes because a font name may only included up
