@@ -26,6 +26,7 @@ encode(char *out, const char *s)
 	return out;
 }
 
+
 static char *
 encode_range(char *out, const char *s)
 {
@@ -37,6 +38,7 @@ encode_range(char *out, const char *s)
 		*out++ = (*s == '-' ? isdigit(s[-1]) ? '_' : '~' : *s);
 	return out;
 }
+
 
 int
 libfonts_encode_font_description(const struct libfonts_font_description *desc, char out[static 256])

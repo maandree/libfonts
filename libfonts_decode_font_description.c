@@ -16,10 +16,12 @@
 	X(average_width)\
 	X(charset_registry)
 
+
 struct range {
 	uint32_t first;
 	uint32_t last;
 };
+
 
 static int
 parse_hexadecimal(const char *s, const char **endp, uint32_t *valuep)
@@ -42,6 +44,7 @@ parse_hexadecimal(const char *s, const char **endp, uint32_t *valuep)
 	return 0;
 }
 
+
 static int
 parse_decimal(const char *s, const char **endp, uint32_t *valuep)
 {
@@ -58,6 +61,7 @@ parse_decimal(const char *s, const char **endp, uint32_t *valuep)
 	return 0;
 }
 
+
 static int
 parse_number(const char *s, const char **endp, uint32_t *valuep)
 {
@@ -67,12 +71,14 @@ parse_number(const char *s, const char **endp, uint32_t *valuep)
 		return parse_decimal(&s[0], endp, valuep);
 }
 
+
 static int
 cmprange(const void *av, const void *bv)
 {
 	const struct range *a = av, *b = bv;
 	return a->first < b->first ? -1 : a->first > b->first;
 }
+
 
 static int
 fix_charset_subset(char *out, const char *in)
@@ -129,6 +135,7 @@ fix_charset_subset(char *out, const char *in)
 	out[-1] = '\0';
 	return 0;
 }
+
 
 int
 libfonts_decode_font_description(struct libfonts_font_description *desc, const char *in)
