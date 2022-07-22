@@ -542,17 +542,17 @@ struct libfonts_font_description {
  */
 ssize_t libfonts_get_default_font(enum libfonts_default_font, char *, size_t);
 /* TODO implement libfonts_get_default_font
- *
+ * 
  * /etc/libfonts/default-fonts.conf
- *
- * 	sans-serif = $FONTNAME
- * 	serif = $FONTNAME
- * 	monospace = $FONTNAME
- *
+ * 
+ *     sans-serif = $FONTNAME
+ *     serif = $FONTNAME
+ *     monospace = $FONTNAME
+ * 
  * fallback, look in /etc/libfonts/default-fonts/sans-serif/
  *                   /etc/libfonts/default-fonts/serif/
  *                   /etc/libfonts/default-fonts/monospace/
- *
+ * 
  * as a last resort look around for some
  * font that matches the specification as
  * well as possible
@@ -653,7 +653,24 @@ int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descr
  *                    -1 on failure
  */
 int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *);
-/* TODO implement libfonts_get_default_rendering_settings */
+/* TODO implement libfonts_get_default_rendering_settings
+ * 
+ * /etc/libfonts/default-rendering.conf
+ * 
+ *     dpi-x = $dpi_x (default = 96)
+ *     dpi-y = $dpi_y (default = 96)
+ *     ref-width = $reference_width (default = 0)
+ *     ref-height = $reference_height (default = 0)
+ *     subpixel-order = $subpixel_order (default = LIBFONTS_SUBPIXEL_ORDER_UNKNOWN)
+ *     greyscale-min = $min_dpsqi_for_greyscale (default = 0)
+ *     subpixel-min = $min_dpsqi_for_subpixel (default = 0)
+ *     h-grey-text-aa = $horizontal_grey_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
+ *     v-grey-text-aa = $vertical_grey_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
+ *     d-grey-text-aa = $diagonal_grey_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
+ *     h-coloured-text-aa = $horizontal_colour_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
+ *     v-coloured-text-aa = $vertical_colour_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
+ *     d-coloured-text-aa = $diagonal_colour_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
+ */
 
 /**
  * Get rendering settings specified for a specific output device
@@ -665,7 +682,13 @@ int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *
  *                    -1 on failure
  */
 int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *);
-/* TODO implement libfonts_get_output_rendering_settings */
+/* TODO implement libfonts_get_output_rendering_settings
+ * 
+ * /etc/libfonts/output-rendering.conf
+ * 
+ *     [$NAME]
+ *     $SETTINGS
+ */
 
 
 /**
