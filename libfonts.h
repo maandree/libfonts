@@ -5,11 +5,35 @@
 #include <stdint.h>
 
 
+/**
+ * Antialiasing algorithm
+ */
 enum libfonts_antialiasing {
+	/**
+	 * No antialiasing rule specified, use default or if default
+	 * is also unspecified: `LIBFONTS_ANTIALIASING_GREYSCALE`
+	 */
 	LIBFONTS_ANTIALIASING_UNSPECIFIED,
+
+	/**
+	 * Do not antialias
+	 */
 	LIBFONTS_ANTIALIASING_NONE,
+
+	/**
+	 * Use greyscale-antialiasing
+	 */
 	LIBFONTS_ANTIALIASING_GREYSCALE,
+
+	/**
+	 * Use subpixel rendering
+	 */
 	LIBFONTS_ANTIALIASING_SUBPIXEL,
+
+	/**
+	 * Use subpixel rendering regardless of
+	 * other settings
+	 */
 	LIBFONTS_ANTIALIASING_SUBPIXEL_FORCED
 };
 
