@@ -522,6 +522,9 @@ int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descr
 /**
  * Get the rendering settings to use for output devices
  * without any specific rendering settings configured
+ *
+ * Applications that are not output-aware shall use
+ * these settings
  * 
  * @param   settings  Output parameter for the rendering settings;
  *                    `settings->dpi_x` and `settings->dpi_y` will
