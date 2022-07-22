@@ -12,10 +12,34 @@ enum libfonts_antialiasing {
 	LIBFONTS_ANTIALIASING_SUBPIXEL_FORCED
 };
 
+
+/**
+ * Output subpixel order
+ */
 enum libfonts_subpixel_order {
+	/**
+	 * Unknown subpixel order
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_UNKNOWN,
+
+	/**
+	 * Output is not an RGB output device
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_NONRGB,
+
+	/**
+	 * Output is an RGB output device, but
+	 * the subpixels are not ordered in a
+	 * grid of rectangles or subpixels are
+	 * disjoint
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_NONLINEAR,
+
+	/**
+	 * Output is an RGB output device, but
+	 * the subpixel is non of the supported
+	 * subpixel orders
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_OTHER,
 
 	/* For any value V, a rotation of 90⋅R degrees, R integer,
@@ -77,42 +101,171 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BR_BG
 };
 
+
+/**
+ * Device rotation
+ */
 enum libfonts_orientation {
+	/**
+	 * Unknown rotation
+	 */
 	LIBFONTS_ORIENTATION_UNKNOWN,
+
+	/**
+	 * Not rotated
+	 */
 	LIBFONTS_ORIENTATION_0_DEGREES_CLOCKWISE,
+
+	/**
+	 * Rotated 90 degrees clockwise
+	 */
 	LIBFONTS_ORIENTATION_90_DEGREES_CLOCKWISE,
+
+	/**
+	 * Rotated 180 degrees
+	 */
 	LIBFONTS_ORIENTATION_180_DEGREES_CLOCKWISE,
+
+	/**
+	 * Rotated 90 degrees counter-clockwise
+	 */
 	LIBFONTS_ORIENTATION_270_DEGREES_CLOCKWISE,
+
+	/**
+	 * Not rotated by a multiple of 90 degrees
+	 */
 	LIBFONTS_ORIENTATION_OTHER
 };
+/* TODO use affine transformations instead to account for scaling and mirroring */
 
+
+/**
+ * Text rendering settings
+ */
 struct libfonts_rendering_settings {
-	double dpi_x; /* actually pixels rather than dots */
+	/**
+	 * The output device's horizontal pixel density,
+	 * in pixels (not dots) per inch, without output
+	 * rotation applied, zero if not applicable or unknown
+	 */
+	double dpi_x;
+
+	/**
+	 * The output device's vertical pixel density,
+	 * in pixels (not dots) per inch, without output
+	 * rotation applied, zero if not applicable or unknown
+	 */
 	double dpi_y;
+
+	/**
+	 * Antialiasing mode for horizontal, grey text
+	 */
 	enum libfonts_antialiasing horizontal_grey_text_antialiasing;
+
+	/**
+	 * Antialiasing mode for vertical, grey text
+	 */
 	enum libfonts_antialiasing vertical_grey_text_antialiasing;
+
+	/**
+	 * Antialiasing mode for non-horizontal, non-vertical, grey text
+	 */
 	enum libfonts_antialiasing diagonal_grey_text_antialiasing;
+
+	/**
+	 * Antialiasing mode for horizontal, non-grey text
+	 */
 	enum libfonts_antialiasing horizontal_colour_text_antialiasing;
+
+	/**
+	 * Antialiasing mode for vertical, non-grey text
+	 */
 	enum libfonts_antialiasing vertical_colour_text_antialiasing;
+
+	/**
+	 * Antialiasing mode for non-horizontal, non-vertical, non-grey text
+	 */
 	enum libfonts_antialiasing diagonal_colour_text_antialiasing;
+
+	/**
+	 * TODO
+	 */
 	enum libfonts_subpixel_order unrotated_subpixel_order;
+
+	/**
+	 * TODO
+	 */
 	enum libfonts_orientation default_physical_screen_orientation;
 };
 
+
+/**
+ * Output device information structure
+ */
 struct libfonts_output {
+	/**
+	 * The output's X-location on the screen (pixels left)
+	 */
 	int32_t output_x;
+
+	/**
+	 * The output's Y-location on the screen (pixels down)
+	 */
 	int32_t output_y;
+
+	/**
+	 * The output's width, in pixels
+	 */
 	uint32_t output_width;
+
+	/**
+	 * The output's height, in pixels
+	 */
 	uint32_t output_height;
+
+	/**
+	 * The index of the screen the output belongs to
+	 */
 	int output_screen;
+
+	/**
+	 * The rotation of the output
+	 */
 	enum libfonts_orientation physical_screen_orientation;
+
+	/**
+	 * The output's subpixel order, disregarding applied rotation
+	 */
 	enum libfonts_subpixel_order unrotated_subpixel_order;
+
+	/**
+	 * The output's horizontal pixel density (pixels per inch),
+	 * zero if not applicable or unknown
+	 * 
+	 * This `.output_width` divided by the output's physical
+	 * width in inches
+	 */
 	double dpi_x;
+
+	/**
+	 * The output's vertical pixel density (pixels per inch),
+	 * zero if not applicable or unknown
+	 * 
+	 * This `.output_height` divided by the output's physical
+	 * height in inches
+	 */
 	double dpi_y;
+
+	/**
+	 * Text renderings settings for the output device
+	 */
 	struct libfonts_rendering_settings *rendering_settings;
 };
 
 
+/**
+ * Font description structure
+ */
 struct libfonts_font_description {
 	/**
 	 * The font name unless the foundry is registered with X,
@@ -315,8 +468,33 @@ int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descr
 
 int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *);
 int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *);
-int libfonts_get_output_dpi(struct libfonts_output *, const char *);
 
+/**
+ * Get an approximate pixel density for an output device
+ * 
+ * The returned pixel density applied to the applied
+ * screen resolution, but without any rotation
+ *
+ * The output pixel density is only approximate because
+ * the EDID has limited dimension resolution
+ * 
+ * @param   output  Output device information, `.output_width` and `.output_height`
+ *                  must already be set; this function will set `.dpi_x` and `.dpi_y`
+ *                  (both will be set to zero if the function returns zero)
+ * @param   edid    The output device's EDID, in hexadecimal representation
+ * @return          1 if a pixel density was calculated,
+ *                  0 otherwise (projector or unsupported EDID)
+ */
+int libfonts_get_output_dpi(struct libfonts_output *, const char *);
+/* TODO should take rotation into account */
+
+/**
+ * Calculate the subpixel order on an output device after a rotation is applied
+ * 
+ * @param   unrotated  The device's subpixel order
+ * @param   rotation   The applied rotation
+ * @return             The device's logical subpixel order
+ */
 enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order, enum libfonts_orientation);
 
 
