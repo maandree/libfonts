@@ -89,6 +89,10 @@ enum libfonts_subpixel_colour {
 
 /**
  * Output subpixel order class
+ * 
+ * Descriptions of relative dimensions for the members
+ * of this enumerated type assume that the monitor's
+ * vertical and horizontal DPI (dots per inch) are equal
  */
 enum libfonts_subpixel_order_class {
 	/**
@@ -100,8 +104,8 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER,
 
 	/**
-	 * Horizontally stacked vertical stripes,
-	 * numbered from left to right
+	 * A square of horizontally stacked vertical
+	 * stripes, numbered from left to right
 	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
@@ -114,8 +118,8 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_123,
 
 	/**
-	 * Vertically stacked horizontal stripes,
-	 * numbered from top to bottom
+	 * A square of vertically stacked horizontal
+	 * stripes, numbered from top to bottom
 	 * 
 	 * ┌───────────┐
 	 * │     1     │
@@ -128,8 +132,10 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_1_2_3,
 
 	/**
-	 * Two squares with a horizontal 2:1-oblong
-	 * rectangle stacked above them
+	 * A square of two squares with a horizontal
+	 * 2:1-oblong rectangle stacked above them;
+	 * the rectangle is numbered 1, and the two
+	 * squares numbered 2 and 3 from left to right
 	 * 
 	 * ┌───────┐
 	 * │   1   │
@@ -140,8 +146,11 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_11_23,
 
 	/**
-	 * Two vertically stacked squares with a
-	 * vertical 2:1-oblong rectangle to their right
+	 * A square of two squares vertically stacked
+	 * squares with a vertical 2:1-oblong rectangle
+	 * to their right; the rectangle is numbered 1,
+	 * and the two squares are numbered 2 and 3 from
+	 * top to bottom
 	 * 
 	 * ┌───┬───┐
 	 * │ 2 │   │
@@ -152,8 +161,10 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_21_31,
 
 	/**
-	 * Two squares with a horizontal 2:1-oblong
-	 * rectangle stacked beneath them
+	 * A square of two squares with a horizontal
+	 * 2:1-oblong rectangle stacked beneath them;
+	 * the rectangle is numbered 1, and the two
+	 * squares numbered 2 and 3 from right to left
 	 * 
 	 * ┌───┬───┐
 	 * │ 3 │ 2 │
@@ -164,8 +175,11 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_32_11,
 
 	/**
-	 * Two vertically stacked squares with a
-	 * vertical 2:1-oblong rectangle to their left
+	 * A square of two squares vertically stacked
+	 * squares with a vertical 2:1-oblong rectangle
+	 * to their left; the rectangle is numbered 1,
+	 * and the two squares are numbered 2 and 3 from
+	 * bottom to top
 	 * 
 	 * ┌───┬───┐
 	 * │   │ 3 │
@@ -177,8 +191,8 @@ enum libfonts_subpixel_order_class {
 
 	/**
 	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_11_23`
-	 * with the subpixels stretched to balance
-	 * the subpixels to have equal size
+	 * with the subpixels redimensioned to
+	 * balance the subpixels to have equal size
 	 * 
 	 * ┌───────────┐
 	 * │     1     │
@@ -187,13 +201,17 @@ enum libfonts_subpixel_order_class {
 	 * │  2  │  3  │
 	 * │     │     │
 	 * └─────┴─────┘
+	 *
+	 * Cells 2 and 3 have the aspect ratio
+	 * (width to height) 3:4 and cell 1 has
+	 * the aspect ratio 6:2
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_11_23,
 
 	/**
 	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_21_21`
-	 * with the subpixels stretched to balance
-	 * the subpixels to have equal size
+	 * with the subpixels redimensioned to
+	 * balance the subpixels to have equal size
 	 * 
 	 * ┌───────┬───┐
 	 * │   2   │   │
@@ -202,13 +220,17 @@ enum libfonts_subpixel_order_class {
 	 * │   3   │   │
 	 * │       │   │
 	 * └───────┴───┘
+	 *
+	 * Cells 2 and 3 have the aspect ratio
+	 * (width to height) 4:3 and cell 1 has
+	 * the aspect ratio 2:6
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_21_31,
 
 	/**
 	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_32_11`
-	 * with the subpixels stretched to balance
-	 * the subpixels to have equal size
+	 * with the subpixels redimensioned to
+	 * balance the subpixels to have equal size
 	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
@@ -217,13 +239,17 @@ enum libfonts_subpixel_order_class {
 	 * ├─────┴─────┤
 	 * │     1     │
 	 * └───────────┘
+	 *
+	 * Cells 2 and 3 have the aspect ratio
+	 * (width to height) 3:4 and cell 1 has
+	 * the aspect ratio 6:2
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_32_11,
 
 	/**
 	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_13_12`
-	 * with the subpixels stretched to balance
-	 * the subpixels to have equal size
+	 * with the subpixels redimensioned to
+	 * balance the subpixels to have equal size
 	 * 
 	 * ┌───┬───────┐
 	 * │   │   3   │
@@ -232,6 +258,10 @@ enum libfonts_subpixel_order_class {
 	 * │   │   2   │
 	 * │   │       │
 	 * └───┴───────┘
+	 *
+	 * Cells 2 and 3 have the aspect ratio
+	 * (width to height) 4:3 and cell 1 has
+	 * the aspect ratio 2:6
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_13_12
 };
