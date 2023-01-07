@@ -477,7 +477,283 @@ enum libfonts_subpixel_order {
 	 * │   │ G │
 	 * └───┴───┘
 	 */
-	LIBFONTS_SUBPIXEL_ORDER_BR_BG
+	LIBFONTS_SUBPIXEL_ORDER_BR_BG,
+
+
+
+	/**
+	 * ┌───────────┐
+	 * │     R     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  G  │  B  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RR_GB,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   G   │   │
+	 * │       │   │
+	 * ├───────┤ R │
+	 * │   B   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_BR,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  B  │  G  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     R     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_RR,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   B   │
+	 * │   │       │
+	 * │ R ├───────┤
+	 * │   │   G   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_RG,
+
+
+
+	/**
+	 * ┌───────────┐
+	 * │     R     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  B  │  G  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RR_BG,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   B   │   │
+	 * │       │   │
+	 * ├───────┤ R │
+	 * │   G   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_GR,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  G  │  B  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     R     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RR,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   G   │
+	 * │   │       │
+	 * │ R ├───────┤
+	 * │   │   B   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_RB,
+
+
+
+	/**
+	 * ┌───────────┐
+	 * │     G     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  R  │  B  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GG_RB,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   R   │   │
+	 * │       │   │
+	 * ├───────┤ G │
+	 * │   B   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BG,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  B  │  R  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     G     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_GG,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   B   │
+	 * │   │       │
+	 * │ G ├───────┤
+	 * │   │   R   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_GR,
+
+
+
+	/**
+	 * ┌───────────┐
+	 * │     G     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  B  │  R  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GG_BR,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   B   │   │
+	 * │       │   │
+	 * ├───────┤ G │
+	 * │   R   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_RG,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  R  │  B  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     G     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_GG,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   R   │
+	 * │   │       │
+	 * │ G ├───────┤
+	 * │   │   B   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_GB,
+
+
+
+	/**
+	 * ┌───────────┐
+	 * │     B     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  R  │  G  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BB_RG,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   R   │   │
+	 * │       │   │
+	 * ├───────┤ B │
+	 * │   G   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_GB,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  G  │  R  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     B     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_BB,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   G   │
+	 * │   │       │
+	 * │ B ├───────┤
+	 * │   │   R   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_BR,
+
+
+
+	/**
+	 * ┌───────────┐
+	 * │     B     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  G  │  R  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BB_GR,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   G   │   │
+	 * │       │   │
+	 * ├───────┤ B │
+	 * │   R   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RB,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  R  │  G  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     B     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BB,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   R   │
+	 * │   │       │
+	 * │ B ├───────┤
+	 * │   │   G   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_BG
 };
 
 
