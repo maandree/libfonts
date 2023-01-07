@@ -1763,10 +1763,10 @@ enum libfonts_subpixel_order_class libfonts_get_subpixel_order_class(enum libfon
                                                                      enum libfonts_subpixel_colour *);
 
 /**
- * Get the general subpixel layout, as well
- * as which primary is contained in which
- * cell in the layout, from a specific
- * subpixel order
+ * Get a specific subpixel order from the
+ * combination of a general subpixel layout
+ * and the primaries for each cell in the
+ * layout
  *
  * @param   orderp  Output parameter for the subpixel order
  * @param   layout  The subpixel layout
