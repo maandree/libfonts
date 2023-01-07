@@ -21,7 +21,9 @@ OBJ =\
 	libfonts_decode_font_description.o\
 	libfonts_encode_font_description.o\
 	libfonts_get_default_font_name.o\
-	libfonts_get_output_dpi.o
+	libfonts_get_output_dpi.o\
+	libfonts_get_subpixel_order_class.o\
+	libfonts_unget_subpixel_order_class.o
 
 HDR =\
 	common.h\

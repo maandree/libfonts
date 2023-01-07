@@ -68,6 +68,142 @@ enum libfonts_antialiasing {
 
 
 /**
+ * Output subpixel colour
+ */
+enum libfonts_subpixel_colour {
+	/**
+	 * Red primary
+	 */
+	LIBFONTS_SUBPIXEL_COLOUR_RED = 0,
+
+	/**
+	 * Green primary
+	 */
+	LIBFONTS_SUBPIXEL_COLOUR_GREEN = 1,
+
+	/**
+	 * Blue primary
+	 */
+	LIBFONTS_SUBPIXEL_COLOUR_BLUE = 2
+};
+
+/**
+ * Output subpixel order class
+ */
+enum libfonts_subpixel_order_class {
+	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_UNKNOWN`,
+	 * `LIBFONTS_SUBPIXEL_ORDER_NONRGB`,
+	 * `LIBFONTS_SUBPIXEL_ORDER_NONLINEAR`, or
+	 * `LIBFONTS_SUBPIXEL_ORDER_OTHER`
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER,
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ 1 │ 2 │ 3 │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_123,
+
+	/**
+	 * ┌───────────┐
+	 * │     1     │
+	 * ├───────────┤
+	 * │     2     │
+	 * ├───────────┤
+	 * │     3     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_1_2_3,
+
+	/**
+	 * ┌───────┐
+	 * │   1   │
+	 * ├───┬───┤
+	 * │ 2 │ 3 │
+	 * └───┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_11_23,
+
+	/**
+	 * ┌───┬───┐
+	 * │ 2 │   │
+	 * ├───┤ 1 │
+	 * │ 3 │   │
+	 * └───┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_21_31,
+
+	/**
+	 * ┌───┬───┐
+	 * │ 3 │ 2 │
+	 * ├───┴───┤
+	 * │   1   │
+	 * └───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_32_11,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ 3 │
+	 * │ 1 ├───┤
+	 * │   │ 2 │
+	 * └───┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_13_12,
+
+	/**
+	 * ┌───────────┐
+	 * │     1     │
+	 * ├─────┬─────┤
+	 * │     │     │
+	 * │  2  │  3  │
+	 * │     │     │
+	 * └─────┴─────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_11_23,
+
+	/**
+	 * ┌───────┬───┐
+	 * │   2   │   │
+	 * │       │   │
+	 * ├───────┤ 1 │
+	 * │   3   │   │
+	 * │       │   │
+	 * └───────┴───┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_21_31,
+
+	/**
+	 * ┌─────┬─────┐
+	 * │     │     │
+	 * │  3  │  2  │
+	 * │     │     │
+	 * ├─────┴─────┤
+	 * │     1     │
+	 * └───────────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_32_11,
+
+	/**
+	 * ┌───┬───────┐
+	 * │   │   3   │
+	 * │   │       │
+	 * │ 1 ├───────┤
+	 * │   │   2   │
+	 * │   │       │
+	 * └───┴───────┘
+	 */
+	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_13_12
+};
+
+
+/**
  * Output subpixel order
  */
 enum libfonts_subpixel_order {
@@ -1341,6 +1477,46 @@ int libfonts_get_output_dpi(struct libfonts_output *, const char *);
  * @return                  The device's logical subpixel order
  */
 enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order, const struct libfonts_transformation *);
+
+/**
+ * Get the general subpixel layout, as well
+ * as which primary is contained in which
+ * cell in the layout, from a specific
+ * subpixel order
+ *
+ * @param   order   The subpixel order
+ * @param   cell1p  Output parameter for the primary contained in cell 1
+ * @param   cell2p  Output parameter for the primary contained in cell 2
+ * @param   cell3p  Output parameter for the primary contained in cell 3
+ * @return          The subpixel layout
+ */
+enum libfonts_subpixel_order_class libfonts_get_subpixel_order_class(enum libfonts_subpixel_order,
+                                                                     enum libfonts_subpixel_colour *,
+                                                                     enum libfonts_subpixel_colour *,
+                                                                     enum libfonts_subpixel_colour *);
+
+/**
+ * Get the general subpixel layout, as well
+ * as which primary is contained in which
+ * cell in the layout, from a specific
+ * subpixel order
+ *
+ * @param    orderp  Output parameter for the subpixel order
+ * @param    layout  The subpixel layout
+ * @param    cell1   The primary contained in cell 1
+ * @param    cell2   The primary contained in cell 2
+ * @param    cell3   The primary contained in cell 3
+ * @return           Normally 1, but 0 if `layout` is `LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER`;
+ *                   -1 on failure
+ * 
+ * @throws  EINVAL  Unrecognised value in `layout`, `cell1`, `cell2`, or `cell3`
+ * @throws  EINVAL  The values of `cell1`, `cell2`, and `cell3` are not unique
+ */
+int libfonts_unget_subpixel_order_class(enum libfonts_subpixel_order *,
+                                        enum libfonts_subpixel_order_class,
+                                        enum libfonts_subpixel_colour,
+                                        enum libfonts_subpixel_colour,
+                                        enum libfonts_subpixel_colour);
 
 
 #endif
