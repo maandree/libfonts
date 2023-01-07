@@ -85,6 +85,25 @@ enum libfonts_subpixel_order {
 	 * Output is an RGB output device, but the subpixels
 	 * are not ordered in a grid of rectangles or subpixels
 	 * are disjoint
+	 * 
+	 * This includes the patterns (with disjoint subpixels)
+	 * 
+	 *     ┌───┬───┐ (LIBFONTS_SUBPIXEL_ORDER_RG_BR,
+	 *     │ 1 │ 2 │  LIBFONTS_SUBPIXEL_ORDER_RB_GR,
+	 *     ├───┼───┤  LIBFONTS_SUBPIXEL_ORDER_GR_BG,
+	 *     │ 3 │ 1 │  LIBFONTS_SUBPIXEL_ORDER_GB_RG,
+	 *     └───┴───┘  LIBFONTS_SUBPIXEL_ORDER_BR_GB,
+	 *                LIBFONTS_SUBPIXEL_ORDER_BG_RB)
+	 * and
+	 *               (LIBFONTS_SUBPIXEL_ORDER_RG_GB,
+	 *     ┌───┬───┐  LIBFONTS_SUBPIXEL_ORDER_RB_BG,
+	 *     │ 1 │ 2 │  LIBFONTS_SUBPIXEL_ORDER_GR_RB,
+	 *     ├───┼───┤  LIBFONTS_SUBPIXEL_ORDER_GB_BR,
+	 *     │ 2 │ 3 │  LIBFONTS_SUBPIXEL_ORDER_BR_RG,
+	 *     └───┴───┘  LIBFONTS_SUBPIXEL_ORDER_BG_GR)
+	 * 
+	 * as well trianglar arrangements as found on many
+	 * CRT-monitors
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_NONLINEAR,
 
@@ -94,49 +113,370 @@ enum libfonts_subpixel_order {
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_OTHER,
 
+
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ R │ G │ B │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RGB, /* horizontal stacked vertically stripes, red to the left, blue to the right */
+
+	/**
+	 * ┌───────────┐
+	 * │     R     │
+	 * ├───────────┤
+	 * │     G     │
+	 * ├───────────┤
+	 * │     B     │
+	 * └───────────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_R_G_B, /* vertically stacked horizontal stripes, red at the top, blue at the bottom */
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ B │ G │ R │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BGR,
+
+	/**
+	 * ┌───────────┐
+	 * │     B     │
+	 * ├───────────┤
+	 * │     G     │
+	 * ├───────────┤
+	 * │     R     │
+	 * └───────────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_B_G_R,
 
+
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ G │ B │ R │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GBR,
+
+	/**
+	 * ┌───────────┐
+	 * │     G     │
+	 * ├───────────┤
+	 * │     B     │
+	 * ├───────────┤
+	 * │     R     │
+	 * └───────────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_G_B_R,
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ R │ B │ G │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RBG,
+
+	/**
+	 * ┌───────────┐
+	 * │     R     │
+	 * ├───────────┤
+	 * │     B     │
+	 * ├───────────┤
+	 * │     G     │
+	 * └───────────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_R_B_G,
 
+
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ B │ R │ G │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BRG,
+
+	/**
+	 * ┌───────────┐
+	 * │     B     │
+	 * ├───────────┤
+	 * │     R     │
+	 * ├───────────┤
+	 * │     G     │
+	 * └───────────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_B_R_G,
+
+	/**
+	 * ┌───┬───┬───┐
+	 * │   │   │   │
+	 * │   │   │   │
+	 * │ G │ R │ B │
+	 * │   │   │   │
+	 * │   │   │   │
+	 * └───┴───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GRB,
+
+	/**
+	 * ┌───────────┐
+	 * │     G     │
+	 * ├───────────┤
+	 * │     R     │
+	 * ├───────────┤
+	 * │     B     │
+	 * └───────────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_G_R_B,
 
+
+
+	/**
+	 * ┌───────┐
+	 * │   R   │
+	 * ├───┬───┤
+	 * │ G │ B │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RR_GB,
+
+	/**
+	 * ┌───┬───┐
+	 * │ G │   │
+	 * ├───┤ R │
+	 * │ B │   │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GR_BR,
+
+	/**
+	 * ┌───┬───┐
+	 * │ B │ G │
+	 * ├───┴───┤
+	 * │   R   │
+	 * └───────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BG_RR,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ B │
+	 * │ R ├───┤
+	 * │   │ G │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RB_RG,
 
+
+
+	/**
+	 * ┌───────┐
+	 * │   R   │
+	 * ├───┬───┤
+	 * │ B │ G │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RR_BG,
+
+	/**
+	 * ┌───┬───┐
+	 * │ B │   │
+	 * ├───┤ R │
+	 * │ G │   │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BR_GR,
+
+	/**
+	 * ┌───┬───┐
+	 * │ G │ B │
+	 * ├───┴───┤
+	 * │   R   │
+	 * └───────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GB_RR,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ G │
+	 * │ R ├───┤
+	 * │   │ B │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RG_RB,
 
+
+
+	/**
+	 * ┌───────┐
+	 * │   G   │
+	 * ├───┬───┤
+	 * │ R │ B │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GG_RB,
+
+	/**
+	 * ┌───┬───┐
+	 * │ R │   │
+	 * ├───┤ G │
+	 * │ B │   │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RG_BG,
+
+	/**
+	 * ┌───┬───┐
+	 * │ B │ R │
+	 * ├───┴───┤
+	 * │   G   │
+	 * └───────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BR_GG,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ B │
+	 * │ G ├───┤
+	 * │   │ R │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GB_GR,
 
+
+
+	/**
+	 * ┌───────┐
+	 * │   G   │
+	 * ├───┬───┤
+	 * │ B │ R │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GG_BR,
+
+	/**
+	 * ┌───┬───┐
+	 * │ B │   │
+	 * ├───┤ G │
+	 * │ R │   │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BG_RG,
+
+	/**
+	 * ┌───┬───┐
+	 * │ R │ B │
+	 * ├───┴───┤
+	 * │   G   │
+	 * └───────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RB_GG,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ R │
+	 * │ G ├───┤
+	 * │   │ B │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GR_GB,
 
+
+
+	/**
+	 * ┌───────┐
+	 * │   B   │
+	 * ├───┬───┤
+	 * │ R │ G │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BB_RG,
+
+	/**
+	 * ┌───┬───┐
+	 * │ R │   │
+	 * ├───┤ B │
+	 * │ G │   │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RB_GB,
+
+	/**
+	 * ┌───┬───┐
+	 * │ G │ R │
+	 * ├───┴───┤
+	 * │   B   │
+	 * └───────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GR_BB,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ G │
+	 * │ B ├───┤
+	 * │   │ R │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BG_BR,
 
+
+
+	/**
+	 * ┌───────┐
+	 * │   B   │
+	 * ├───┬───┤
+	 * │ G │ R │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BB_GR,
+
+	/**
+	 * ┌───┬───┐
+	 * │ G │   │
+	 * ├───┤ B │
+	 * │ R │   │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_GB_RB,
+
+	/**
+	 * ┌───┬───┐
+	 * │ R │ G │
+	 * ├───┴───┤
+	 * │   B   │
+	 * └───────┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_RG_BB,
+
+	/**
+	 * ┌───┬───┐
+	 * │   │ R │
+	 * │ B ├───┤
+	 * │   │ G │
+	 * └───┴───┘
+	 */
 	LIBFONTS_SUBPIXEL_ORDER_BR_BG
 };
 
