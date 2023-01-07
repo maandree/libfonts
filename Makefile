@@ -25,6 +25,10 @@ OBJ =\
 	libfonts_get_subpixel_order_class.o\
 	libfonts_unget_subpixel_order_class.o
 
+TESTS =\
+	libfonts_get_subpixel_order_class.test\
+	libfonts_unget_subpixel_order_class.test
+
 HDR =\
 	common.h\
 	libfonts.h
@@ -32,15 +36,19 @@ HDR =\
 LOBJ = $(OBJ:.o=.lo)
 
 
-all: libfonts.a libfonts.$(LIBEXT)
+all: libfonts.a libfonts.$(LIBEXT) $(TESTS)
 $(OBJ): $(HDR)
 $(LOBJ): $(HDR)
+$(TESTS): $(HDR) libfonts.a
 
 .c.o:
 	$(CC) -c -o $@ $< $(CFLAGS) $(CPPFLAGS)
 
 .c.lo:
 	$(CC) -fPIC -c -o $@ $< $(CFLAGS) $(CPPFLAGS)
+
+.c.test:
+	$(CC) -o $@ $< libfonts.a $(CFLAGS) $(CPPFLAGS) -DTEST $(LDFLAGS)
 
 libfonts.a: $(OBJ)
 	@rm -f -- $@
@@ -49,6 +57,9 @@ libfonts.a: $(OBJ)
 
 libfonts.$(LIBEXT): $(LOBJ)
 	$(CC) $(LIBFLAGS) -o $@ $(LOBJ) $(LDFLAGS)
+
+check: $(TESTS)
+	@for t in $(TESTS); do printf './%s\n' $$t; ./$$t || exit 1; done
 
 install: libfonts.a libfonts.$(LIBEXT)
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/lib"
@@ -68,10 +79,10 @@ uninstall:
 	-rm -f -- "$(DESTDIR)$(PREFIX)/include/libfonts.h"
 
 clean:
-	-rm -f -- *.o *.a *.lo *.su *.so *.so.* *.dll *.dylib
+	-rm -f -- *.o *.a *.lo *.su *.so *.so.* *.dll *.dylib *.test
 	-rm -f -- *.gch *.gcov *.gcno *.gcda *.$(LIBEXT)
 
 .SUFFIXES:
-.SUFFIXES: .lo .o .c
+.SUFFIXES: .lo .o .c .test
 
 .PHONY: all install uninstall clean

@@ -1589,6 +1589,7 @@ ssize_t libfonts_get_default_font(enum libfonts_default_font, char *, size_t);
  * @throws  EINVAL  Unrecognised value on `font`
  */
 ssize_t libfonts_get_default_font_name(enum libfonts_default_font, char *, size_t, size_t);
+/* TODO add test */
 
 /**
  * Get a default font a font name represents
@@ -1617,6 +1618,7 @@ int libfonts_get_default_font_by_name(enum libfonts_default_font *, const char *
  * @throws  EINVAL  Invalid font description
  */
 int libfonts_encode_font_description(const struct libfonts_font_description *, char[static 256]);
+/* TODO add test */
 
 /**
  * Decode an X Logical Font Description (XLFD) string
@@ -1628,6 +1630,7 @@ int libfonts_encode_font_description(const struct libfonts_font_description *, c
  * @throws  EINVAL  Invalid font description
  */
 int libfonts_decode_font_description(struct libfonts_font_description *, const char *);
+/* TODO add test */
 
 /**
  * Check if an X Logical Font Description (XLFD) matches
@@ -1729,6 +1732,7 @@ int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *,
  *                  non-invertable output transformation)
  */
 int libfonts_get_output_dpi(struct libfonts_output *, const char *);
+/* TODO add test */
 
 /**
  * Calculate the subpixel order on an output device after
@@ -1739,6 +1743,7 @@ int libfonts_get_output_dpi(struct libfonts_output *, const char *);
  * @return                  The device's logical subpixel order
  */
 enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order, const struct libfonts_transformation *);
+/* TODO add test */
 
 /**
  * Get the general subpixel layout, as well
@@ -1763,13 +1768,13 @@ enum libfonts_subpixel_order_class libfonts_get_subpixel_order_class(enum libfon
  * cell in the layout, from a specific
  * subpixel order
  *
- * @param    orderp  Output parameter for the subpixel order
- * @param    layout  The subpixel layout
- * @param    cell1   The primary contained in cell 1
- * @param    cell2   The primary contained in cell 2
- * @param    cell3   The primary contained in cell 3
- * @return           Normally 1, but 0 if `layout` is `LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER`;
- *                   -1 on failure
+ * @param   orderp  Output parameter for the subpixel order
+ * @param   layout  The subpixel layout
+ * @param   cell1   The primary contained in cell 1
+ * @param   cell2   The primary contained in cell 2
+ * @param   cell3   The primary contained in cell 3
+ * @return          Normally 1, but 0 if `layout` is `LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER`;
+ *                  -1 on failure
  * 
  * @throws  EINVAL  Unrecognised value in `layout`, `cell1`, `cell2`, or `cell3`
  * @throws  EINVAL  The values of `cell1`, `cell2`, and `cell3` are not unique

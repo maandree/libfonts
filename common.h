@@ -29,3 +29,16 @@ eq(double a, double b)
 {
 	return b - DOUBLE_TOLERANCE <= a && a <= b + DOUBLE_TOLERANCE;
 }
+
+
+#ifdef TEST
+
+# define ASSERT(ASSERTION)\
+	do {\
+		if (!(ASSERTION)) {\
+			fprintf(stderr, "Failed assertion at line %u: %s\n", __LINE__, #ASSERTION);\
+			exit(1);\
+		}\
+	} while (0)
+
+#endif
