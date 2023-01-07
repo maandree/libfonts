@@ -100,6 +100,9 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER,
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * numbered from left to right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -111,6 +114,9 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_123,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * numbered from top to bottom
+	 * 
 	 * ┌───────────┐
 	 * │     1     │
 	 * ├───────────┤
@@ -122,6 +128,9 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_1_2_3,
 
 	/**
+	 * Two squares with a horizontal 2:1-oblong
+	 * rectangle stacked above them
+	 * 
 	 * ┌───────┐
 	 * │   1   │
 	 * ├───┬───┤
@@ -131,6 +140,9 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_11_23,
 
 	/**
+	 * Two vertically stacked squares with a
+	 * vertical 2:1-oblong rectangle to their right
+	 * 
 	 * ┌───┬───┐
 	 * │ 2 │   │
 	 * ├───┤ 1 │
@@ -140,6 +152,9 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_21_31,
 
 	/**
+	 * Two squares with a horizontal 2:1-oblong
+	 * rectangle stacked beneath them
+	 * 
 	 * ┌───┬───┐
 	 * │ 3 │ 2 │
 	 * ├───┴───┤
@@ -149,6 +164,9 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_32_11,
 
 	/**
+	 * Two vertically stacked squares with a
+	 * vertical 2:1-oblong rectangle to their left
+	 * 
 	 * ┌───┬───┐
 	 * │   │ 3 │
 	 * │ 1 ├───┤
@@ -158,6 +176,10 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_13_12,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_11_23`
+	 * with the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     1     │
 	 * ├─────┬─────┤
@@ -169,6 +191,10 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_11_23,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_21_21`
+	 * with the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   2   │   │
 	 * │       │   │
@@ -180,6 +206,10 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_21_31,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_32_11`
+	 * with the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  3  │  2  │
@@ -191,6 +221,10 @@ enum libfonts_subpixel_order_class {
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_32_11,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_CLASS_13_12`
+	 * with the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   3   │
 	 * │   │       │
@@ -252,6 +286,9 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * red to the left, green in the middle, and blue to the right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -260,9 +297,12 @@ enum libfonts_subpixel_order {
 	 * │   │   │   │
 	 * └───┴───┴───┘
 	 */
-	LIBFONTS_SUBPIXEL_ORDER_RGB, /* horizontal stacked vertically stripes, red to the left, blue to the right */
+	LIBFONTS_SUBPIXEL_ORDER_RGB,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * red at the top, green in the middle, and blue at the bottom
+	 * 
 	 * ┌───────────┐
 	 * │     R     │
 	 * ├───────────┤
@@ -271,9 +311,12 @@ enum libfonts_subpixel_order {
 	 * │     B     │
 	 * └───────────┘
 	 */
-	LIBFONTS_SUBPIXEL_ORDER_R_G_B, /* vertically stacked horizontal stripes, red at the top, blue at the bottom */
+	LIBFONTS_SUBPIXEL_ORDER_R_G_B,
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * blue to the left, green in the middle, and red to the right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -285,6 +328,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BGR,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * blue at the top, green in the middle, and red at the bottom
+	 * 
 	 * ┌───────────┐
 	 * │     B     │
 	 * ├───────────┤
@@ -298,6 +344,9 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * green to the left, blue in the middle, and red to the right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -309,6 +358,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GBR,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * green at the top, blue in the middle, and red at the bottom
+	 * 
 	 * ┌───────────┐
 	 * │     G     │
 	 * ├───────────┤
@@ -320,6 +372,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_G_B_R,
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * red to the left, blue in the middle, and green to the right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -331,6 +386,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RBG,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * red at the top, blue in the middle, and green at the bottom
+	 * 
 	 * ┌───────────┐
 	 * │     R     │
 	 * ├───────────┤
@@ -344,6 +402,9 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * blue to the left, red in the middle, and green to the right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -355,6 +416,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BRG,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * blue at the top, red in the middle, and green at the bottom
+	 * 
 	 * ┌───────────┐
 	 * │     B     │
 	 * ├───────────┤
@@ -366,6 +430,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_B_R_G,
 
 	/**
+	 * Horizontally stacked vertical stripes,
+	 * green to the left, red in the middle, and blue to the right
+	 * 
 	 * ┌───┬───┬───┐
 	 * │   │   │   │
 	 * │   │   │   │
@@ -377,6 +444,9 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GRB,
 
 	/**
+	 * Vertically stacked horizontal stripes,
+	 * green at the top, red in the middle, and blue at the bottom
+	 * 
 	 * ┌───────────┐
 	 * │     G     │
 	 * ├───────────┤
@@ -390,6 +460,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Red subpixel stacked above, having equal height,
+	 * green, on the left, and blue, on the right,
+	 * square subpixels
+	 * 
 	 * ┌───────┐
 	 * │   R   │
 	 * ├───┬───┤
@@ -399,6 +473,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RR_GB,
 
 	/**
+	 * Red subpixel stacked to the right, having
+	 * equal width, of green, on the top, and
+	 * blue, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ G │   │
 	 * ├───┤ R │
@@ -408,6 +486,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GR_BR,
 
 	/**
+	 * Red subpixel stacked beneath, having equal
+	 * height, blue, on the left, and green, on
+	 * the right, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ B │ G │
 	 * ├───┴───┤
@@ -417,6 +499,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BG_RR,
 
 	/**
+	 * Red subpixel stacked to the left, having
+	 * equal width, of blue, on the top, and
+	 * green, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │   │ B │
 	 * │ R ├───┤
@@ -428,6 +514,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Red subpixel stacked above, having equal height,
+	 * blue, on the left, and green, on the right,
+	 * square subpixels
+	 * 
 	 * ┌───────┐
 	 * │   R   │
 	 * ├───┬───┤
@@ -437,6 +527,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RR_BG,
 
 	/**
+	 * Red subpixel stacked to the right, having
+	 * equal width, of blue, on the top, and
+	 * green, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ B │   │
 	 * ├───┤ R │
@@ -446,6 +540,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BR_GR,
 
 	/**
+	 * Red subpixel stacked beneath, having equal
+	 * height, green, on the left, and blue, on
+	 * the right, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ G │ B │
 	 * ├───┴───┤
@@ -455,6 +553,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GB_RR,
 
 	/**
+	 * Red subpixel stacked to the left, having
+	 * equal width, of green, on the top, and
+	 * blue, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │   │ G │
 	 * │ R ├───┤
@@ -466,6 +568,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Green subpixel stacked above, having equal height,
+	 * red, on the left, and blue, on the right,
+	 * square subpixels
+	 * 
 	 * ┌───────┐
 	 * │   G   │
 	 * ├───┬───┤
@@ -475,6 +581,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GG_RB,
 
 	/**
+	 * Green subpixel stacked to the right, having
+	 * equal width, of red, on the top, and
+	 * blue, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ R │   │
 	 * ├───┤ G │
@@ -484,6 +594,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RG_BG,
 
 	/**
+	 * Green subpixel stacked beneath, having equal
+	 * height, blue, on the left, and red, on
+	 * the right, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ B │ R │
 	 * ├───┴───┤
@@ -493,6 +607,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BR_GG,
 
 	/**
+	 * Green subpixel stacked to the left, having
+	 * equal width, of blue, on the top, and
+	 * red, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │   │ B │
 	 * │ G ├───┤
@@ -504,6 +622,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Green subpixel stacked above, having equal height,
+	 * blue, on the left, and red, on the right,
+	 * square subpixels
+	 * 
 	 * ┌───────┐
 	 * │   G   │
 	 * ├───┬───┤
@@ -513,6 +635,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GG_BR,
 
 	/**
+	 * Green subpixel stacked to the right, having
+	 * equal width, of blue, on the top, and
+	 * red, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ B │   │
 	 * ├───┤ G │
@@ -522,6 +648,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BG_RG,
 
 	/**
+	 * Green subpixel stacked beneath, having equal
+	 * height, red, on the left, and blue, on
+	 * the right, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ R │ B │
 	 * ├───┴───┤
@@ -531,6 +661,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RB_GG,
 
 	/**
+	 * Green subpixel stacked to the left, having
+	 * equal width, of red, on the top, and
+	 * blue, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │   │ R │
 	 * │ G ├───┤
@@ -542,6 +676,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Blue subpixel stacked above, having equal height,
+	 * red, on the left, and green, on the right,
+	 * square subpixels
+	 * 
 	 * ┌───────┐
 	 * │   B   │
 	 * ├───┬───┤
@@ -551,6 +689,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BB_RG,
 
 	/**
+	 * Blue subpixel stacked to the right, having
+	 * equal width, of red, on the top, and
+	 * green, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ R │   │
 	 * ├───┤ B │
@@ -560,6 +702,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RB_GB,
 
 	/**
+	 * Blue subpixel stacked beneath, having equal
+	 * height, green, on the left, and red, on
+	 * the right, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ G │ R │
 	 * ├───┴───┤
@@ -569,6 +715,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GR_BB,
 
 	/**
+	 * Blue subpixel stacked to the left, having
+	 * equal width, of green, on the top, and
+	 * red, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │   │ G │
 	 * │ B ├───┤
@@ -580,6 +730,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * Blue subpixel stacked above, having equal height,
+	 * green, on the left, and red, on the right,
+	 * square subpixels
+	 * 
 	 * ┌───────┐
 	 * │   B   │
 	 * ├───┬───┤
@@ -589,6 +743,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BB_GR,
 
 	/**
+	 * Blue subpixel stacked to the right, having
+	 * equal width, of green, on the top, and
+	 * red, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ G │   │
 	 * ├───┤ B │
@@ -598,6 +756,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_GB_RB,
 
 	/**
+	 * Blue subpixel stacked beneath, having equal
+	 * height, red, on the left, and green, on
+	 * the right, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │ R │ G │
 	 * ├───┴───┤
@@ -607,6 +769,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_RG_BB,
 
 	/**
+	 * Blue subpixel stacked to the left, having
+	 * equal width, of red, on the top, and
+	 * green, on the bottom, square subpixels
+	 * 
 	 * ┌───┬───┐
 	 * │   │ R │
 	 * │ B ├───┤
@@ -618,6 +784,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RR_GB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     R     │
 	 * ├─────┬─────┤
@@ -629,6 +799,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RR_GB,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GR_BR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   G   │   │
 	 * │       │   │
@@ -640,6 +814,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_BR,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BG_RR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  B  │  G  │
@@ -651,6 +829,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_RR,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RB_RG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   B   │
 	 * │   │       │
@@ -664,6 +846,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RR_BG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     R     │
 	 * ├─────┬─────┤
@@ -675,6 +861,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RR_BG,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BR_GR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   B   │   │
 	 * │       │   │
@@ -686,6 +876,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_GR,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GB_RR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  G  │  B  │
@@ -697,6 +891,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RR,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RG_RB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   G   │
 	 * │   │       │
@@ -710,6 +908,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GG_RB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     G     │
 	 * ├─────┬─────┤
@@ -721,6 +923,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GG_RB,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RG_BG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   R   │   │
 	 * │       │   │
@@ -732,6 +938,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BG,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BR_GG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  B  │  R  │
@@ -743,6 +953,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_GG,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GB_GR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   B   │
 	 * │   │       │
@@ -756,6 +970,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GG_BR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     G     │
 	 * ├─────┬─────┤
@@ -767,6 +985,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GG_BR,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BG_RG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   B   │   │
 	 * │       │   │
@@ -778,6 +1000,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_RG,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RB_GG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  R  │  B  │
@@ -789,6 +1015,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_GG,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GR_GB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   R   │
 	 * │   │       │
@@ -802,6 +1032,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BB_RG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     B     │
 	 * ├─────┬─────┤
@@ -813,6 +1047,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BB_RG,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RB_GB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   R   │   │
 	 * │       │   │
@@ -824,6 +1062,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_GB,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GR_BB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  G  │  R  │
@@ -835,6 +1077,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_BB,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BG_BR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   G   │
 	 * │   │       │
@@ -848,6 +1094,10 @@ enum libfonts_subpixel_order {
 
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BB_GR` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────────┐
 	 * │     B     │
 	 * ├─────┬─────┤
@@ -859,6 +1109,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_BB_GR,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_GB_RB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───────┬───┐
 	 * │   G   │   │
 	 * │       │   │
@@ -870,6 +1124,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RB,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_RG_BB` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌─────┬─────┐
 	 * │     │     │
 	 * │  R  │  G  │
@@ -881,6 +1139,10 @@ enum libfonts_subpixel_order {
 	LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BB,
 
 	/**
+	 * `LIBFONTS_SUBPIXEL_ORDER_BR_BG` with
+	 * the subpixels stretched to balance
+	 * the subpixels to have equal size
+	 * 
 	 * ┌───┬───────┐
 	 * │   │   R   │
 	 * │   │       │
