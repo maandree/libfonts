@@ -23,6 +23,7 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 	memcpy(path, file_part1, file_part1_len);
 	memcpy(&path[file_part1_len], file_part2, file_part2_len + 1);
 
+	/* TODO aliases should be declarable above the first "[$name]" */
 	/* TODO look for "[$name]" */
 	/* TODO (use LIST_RENDERING_SETTINGS) */
 
