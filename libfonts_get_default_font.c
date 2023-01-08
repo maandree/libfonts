@@ -22,7 +22,7 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2, cons
 	if (!path) {
 	enomem:
 		errno = ENOMEM;
-		return NULL;
+		return NULL; /* TODO abort function */
 	}
 
 	memcpy(path, file_part1, file_part1_len);

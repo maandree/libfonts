@@ -1722,24 +1722,6 @@ int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descr
  *                    -1 on failure
  */
 int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *, struct libfonts_context *);
-/* TODO implement libfonts_get_default_rendering_settings
- * 
- * /etc/libfonts/default-rendering.conf
- * 
- *     dpi-x = $dpi_x (default = 96)
- *     dpi-y = $dpi_y (default = 96)
- *     ref-width = $reference_width (default = 0)
- *     ref-height = $reference_height (default = 0)
- *     subpixel-order = $subpixel_order (default = LIBFONTS_SUBPIXEL_ORDER_UNKNOWN)
- *     greyscale-min = $min_dpsqi_for_greyscale (default = 0)
- *     subpixel-min = $min_dpsqi_for_subpixel (default = 0)
- *     h-grey-text-aa = $horizontal_grey_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
- *     v-grey-text-aa = $vertical_grey_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
- *     d-grey-text-aa = $diagonal_grey_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
- *     h-coloured-text-aa = $horizontal_colour_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
- *     v-coloured-text-aa = $vertical_colour_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
- *     d-coloured-text-aa = $diagonal_colour_text_antialiasing (default = LIBFONTS_ANTIALIASING_GREYSCALE)
- */
 
 /**
  * Get rendering settings specified for a specific output device
@@ -1750,15 +1732,10 @@ int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *
  * @return            1 if rendering settings where found,
  *                    0 otherwise (`*settings` will be unmodified),
  *                    -1 on failure
+ * 
+ * @throws  EINVAL  `name` is `NULL`
  */
 int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *, struct libfonts_context *);
-/* TODO implement libfonts_get_output_rendering_settings
- * 
- * /etc/libfonts/output-rendering.conf
- * 
- *     [$NAME]
- *     $SETTINGS
- */
 
 
 /**

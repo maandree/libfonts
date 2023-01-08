@@ -13,6 +13,21 @@
 
 #define DOUBLE_TOLERANCE 0.000001
 
+#define LIST_RENDERING_SETTINGS(X, _)\
+	X("dpi-x", dpi_x, 96) _\
+	X("dpi-y", dpi_y, 96) _\
+	X("ref-width", reference_width, 0) _\
+	X("ref-height", reference_height, 0) _\
+	X("subpixel-order", subpixel_order, LIBFONTS_SUBPIXEL_ORDER_UNKNOWN) _\
+	X("greyscale-min", min_dpsqi_for_greyscale, 0) _\
+	X("subpixel-min", min_dpsqi_for_subpixel, 0) _\
+	X("h-grey-text-aa", horizontal_grey_text_antialiasing, LIBFONTS_ANTIALIASING_GREYSCALE) _\
+	X("v-grey-text-aa", vertical_grey_text_antialiasing, LIBFONTS_ANTIALIASING_GREYSCALE) _\
+	X("d-grey-text-aa", diagonal_grey_text_antialiasing, LIBFONTS_ANTIALIASING_GREYSCALE) _\
+	X("h-coloured-text-aa", horizontal_colour_text_antialiasing, LIBFONTS_ANTIALIASING_GREYSCALE) _\
+	X("v-coloured-text-aa", vertical_colour_text_antialiasing, LIBFONTS_ANTIALIASING_GREYSCALE) _\
+	X("d-coloured-text-aa", diagonal_colour_text_antialiasing, LIBFONTS_ANTIALIASING_GREYSCALE)
+
 
 static inline void
 transform(double *x_out, double *y_out, double x, double y, const struct libfonts_transformation *transformation)
