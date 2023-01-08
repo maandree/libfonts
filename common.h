@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <limits.h>
 #include <pwd.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -121,6 +122,18 @@
 	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RB, "balanced gb:rb") _\
 	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BB, "balanced rg:bb") _\
 	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_BG, "balanced br:bg")
+
+
+static inline void
+warning(struct libfonts_context *ctx, int err, const char *function, const char *fmt, ...)
+{
+	va_list args;
+	if (ctx && ctx->warning) {
+		va_start(args, fmt);
+		ctx->warning(err, function, fmt, args, ctx->user);
+		va_end(args);
+	}
+}
 
 
 static inline void

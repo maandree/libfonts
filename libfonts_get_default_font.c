@@ -25,6 +25,7 @@ getn(char **outp, const char *file_part1, size_t file_part1_len, const char *fil
 	char *line, *buf = NULL;
 	size_t size = 0, off = 0, avail = 0;
 	char *value;
+	size_t lineno = 0;
 
 	*outp = NULL;
 
@@ -60,7 +61,7 @@ open_again:
 		case ENODEV:
 		case ENOTDIR:
 		case ENXIO:
-			/* TODO print warning using `ctx` */
+			warning(ctx, errno, "libfonts_get_default_font", "failed to open %s:", path);
 			goto out;
 		default:
 			goto out;
@@ -83,6 +84,7 @@ open_again:
 		if (!len)
 			break;
 		line[len -= 1] = '\0';
+		lineno++;
 
 		while (isblank(*line)) {
 			line++;
@@ -96,13 +98,13 @@ open_again:
 
 		value = libfonts_confsplit__(line);
 		if (!value) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_get_default_font", "bad line in %s at line %zu", path, lineno);
 			continue;
 		}
 
 		if (!strcmp(line, name)) {
 			if (*outp) {
-				/* TODO warning */
+				warning(ctx, 0, "libfonts_get_default_font", "duplicate definition in %s at line %zu", path, lineno);
 				free(*outp);
 				*outp = NULL;
 			}
@@ -110,7 +112,7 @@ open_again:
 			if (!*outp)
 				goto fail;
 		} else if (strcmp(line, "sans-serif") && strcmp(line, "serif") && strcmp(line, "monospace")) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_get_default_font", "bad font class in %s at line %zu: %s", path, lineno, line);
 		}
 	}
 

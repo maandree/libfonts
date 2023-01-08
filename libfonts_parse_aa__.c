@@ -36,7 +36,7 @@ main(void)
 			ASSERT(res == C);\
 			strcpy(buf, S);\
 			for (i = 0; buf[i]; i++)\
-				buf[i] = toupper(buf[i]);\
+				buf[i] = (char)toupper(buf[i]);\
 			res = 999;\
 			ASSERT(libfonts_parse_aa__(&res, buf) == 1);\
 			ASSERT(res == C);\

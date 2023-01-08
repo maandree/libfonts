@@ -2,6 +2,7 @@
 #ifndef LIBFONTS_H
 #define LIBFONTS_H
 
+#include <stdarg.h>
 #include <stdint.h>
 #include <unistd.h>
 
@@ -1622,6 +1623,27 @@ struct libfonts_context {
 	 * Only used if `.use_context_uid` is non-zero
 	 */
 	uid_t uid;
+
+	/**
+	 * Application data used in as the last argument
+	 * in callback functions
+	 */
+	void *user;
+
+	/**
+	 * If non-`NULL` some function may call thing
+	 * function to let the application print a
+	 * warning
+	 * 
+	 * @param  err       `errno` value for the warning, 0 if none
+	 * @param  function  The name of the function the warning is emitted from (closest public function)
+	 * @param  fmt       Formattable description of the warning, will start in lower case,
+	 *                   and will end with a colon if and only if a description of `err`
+	 *                   shall be appended to the message (with a preceding space)
+	 * @param  args      Argument used into the description via formatting
+	 * @param  user      `.user` as is
+	 */
+	void (*warning)(int err, const char *function, const char *fmt, va_list args, void *user);
 };
 
 

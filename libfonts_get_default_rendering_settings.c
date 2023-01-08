@@ -15,6 +15,7 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 	size_t size = 0, off = 0, avail = 0;
 	char *value;
 	unsigned int found_fields = 0;
+	size_t lineno = 0;
 
 	if (file_part1_len > SIZE_MAX - file_part2_len - 1)
 		goto enomem;
@@ -48,7 +49,7 @@ open_again:
 		case ENODEV:
 		case ENOTDIR:
 		case ENXIO:
-			/* TODO print warning using `ctx` */
+			warning(ctx, errno, "libfonts_get_default_rendering_settings", "failed to open %s:", path);
 			goto out;
 		default:
 			goto out;
@@ -68,6 +69,7 @@ open_again:
 		if (!len)
 			break;
 		line[len -= 1] = '\0';
+		lineno++;
 
 		while (isblank(*line))
 			line++;
@@ -79,22 +81,25 @@ open_again:
 
 		value = libfonts_confsplit__(line);
 		if (!value) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_get_default_rendering_settings", "bad line in %s at line %zu", path, lineno);
 			continue;
 		}
 
 #define X(INDEX, CONFNAME, CNAME, DEFVAL, PARSER)\
 		if (!strcmp(line, CONFNAME)) {\
 			if (found_fields & (1U << INDEX)) {\
-				/* TODO warning */\
+				warning(ctx, 0, "libfonts_get_default_rendering_settings",\
+				        "duplicate definition in %s at line %zu", path, lineno); \
 			}\
 			found_fields |= (1U << INDEX);\
 			if (!PARSER(&settings->CNAME, value)) {\
-				/* TODO warning */\
+				warning(ctx, 0, "libfonts_get_default_rendering_settings",\
+				        "invalid value in %s at line %zu: %s", path, lineno, value);\
 			}\
 		} else
 		LIST_RENDERING_SETTINGS(X,) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_get_default_rendering_settings",\
+			        "bad definition in %s at line %zu: %s", path, lineno, line);\
 		}
 #undef X
 	}
