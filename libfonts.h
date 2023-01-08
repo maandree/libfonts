@@ -7,6 +7,12 @@
 
 
 /**
+ * The header file's version of `struct libfonts_context`
+ */
+#define LIBFONTS_CONTEXT_VERSION 0
+
+
+/**
  * Style-based default fonts
  */
 enum libfonts_default_font {
@@ -1573,9 +1579,23 @@ struct libfonts_font_description {
 
 /**
  * Structure that can be used to spoof the
- * environment the library is executed in
+ * environment the library is executed in,
+ * as well as the print warnings from the
+ * library
  */
 struct libfonts_context {
+	/**
+	 * Set to `LIBFONTS_CONTEXT_VERSION`
+	 */
+	int version;
+
+	/**
+	 * Non-zero to remove all environment
+	 * variables that are not included in
+	 * `.environ`
+	 */
+	int ignore_process_environ;
+
 	/**
 	 * Environment variables to add or override
 	 *
@@ -1586,23 +1606,16 @@ struct libfonts_context {
 	char **environ;
 
 	/**
+	 * Whether `.uid` is used
+	 */
+	int use_context_uid;
+
+	/**
 	 * The real user ID of the process
 	 *
 	 * Only used if `.use_context_uid` is non-zero
 	 */
 	uid_t uid;
-
-	/**
-	 * Non-zero to remove all environment
-	 * variables that are not included in
-	 * `.environ`
-	 */
-	int ignore_process_environ;
-
-	/**
-	 * Whether `.uid` is used
-	 */
-	int use_context_uid;
 };
 
 

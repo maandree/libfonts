@@ -5,7 +5,7 @@
 
 static int
 getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
-     struct libfonts_rendering_settings *settings, const char *name)
+     struct libfonts_rendering_settings *settings, const char *name, struct libfonts_context *ctx)
 {
 	size_t file_part2_len = strlen(file_part2);
 	char *path;
@@ -32,9 +32,10 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 }
 
 static int
-get(const char *file_part1, const char *file_part2, struct libfonts_rendering_settings *settings, const char *name)
+get(const char *file_part1, const char *file_part2, struct libfonts_rendering_settings *settings,
+    const char *name, struct libfonts_context *ctx)
 {
-	return getn(file_part1, strlen(file_part1), file_part2, settings, name);
+	return getn(file_part1, strlen(file_part1), file_part2, settings, name, ctx);
 }
 
 int
@@ -60,22 +61,22 @@ libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *setti
 
 	env = libfonts_getenv__("XDG_CONFIG_HOME", ctx);
 	if (env && *env)
-		if (get(env, "/libfonts/output-rendering.conf", settings, name))
+		if (get(env, "/libfonts/output-rendering.conf", settings, name, ctx))
 			goto out;
 
 	env = libfonts_getenv__("HOME", ctx);
 	if (env && *env) {
-		if (get(env, "/.config/libfonts/output-rendering.conf", settings, name))
+		if (get(env, "/.config/libfonts/output-rendering.conf", settings, name, ctx))
 			goto out;
-		if (get(env, "/.libfonts/output-rendering.conf", settings, name))
+		if (get(env, "/.libfonts/output-rendering.conf", settings, name, ctx))
 			goto out;
 	}
 
 	home = libfonts_gethome__(ctx);
 	if (home && *home) {
-		if (get(home, "/.config/libfonts/output-rendering.conf", settings, name))
+		if (get(home, "/.config/libfonts/output-rendering.conf", settings, name, ctx))
 			goto out;
-		if (get(home, "/.libfonts/output-rendering.conf", settings, name))
+		if (get(home, "/.libfonts/output-rendering.conf", settings, name, ctx))
 			goto out;
 	}
 
@@ -85,13 +86,13 @@ libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *setti
 			next = strchr(&env[1], ':');
 			len = next ? (size_t)(next - env) : strlen(env);
 			if (len)
-				if (getn(env, len, "/libfonts/output-rendering.conf", settings, name))
+				if (getn(env, len, "/libfonts/output-rendering.conf", settings, name, ctx))
 					goto out;
 			env += len + 1;
 		} while (next);
 	}
 
-	if (get("/etc", "/libfonts/output-rendering.conf", settings, name))
+	if (get("/etc", "/libfonts/output-rendering.conf", settings, name, ctx))
 		goto out;
 
 	ret = 0;

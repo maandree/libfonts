@@ -4,7 +4,8 @@
 
 
 static int
-getn(const char *file_part1, size_t file_part1_len, const char *file_part2, struct libfonts_rendering_settings *settings)
+getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
+     struct libfonts_rendering_settings *settings, struct libfonts_context *ctx)
 {
 	size_t file_part2_len = strlen(file_part2);
 	char *path;
@@ -29,9 +30,10 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2, stru
 }
 
 static int
-get(const char *file_part1, const char *file_part2, struct libfonts_rendering_settings *settings)
+get(const char *file_part1, const char *file_part2,
+    struct libfonts_rendering_settings *settings, struct libfonts_context *ctx)
 {
-	return getn(file_part1, strlen(file_part1), file_part2, settings);
+	return getn(file_part1, strlen(file_part1), file_part2, settings, ctx);
 }
 
 int
@@ -52,22 +54,22 @@ libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *sett
 
 	env = libfonts_getenv__("XDG_CONFIG_HOME", ctx);
 	if (env && *env)
-		if (get(env, "/libfonts/default-rendering.conf", settings))
+		if (get(env, "/libfonts/default-rendering.conf", settings, ctx))
 			goto out;
 
 	env = libfonts_getenv__("HOME", ctx);
 	if (env && *env) {
-		if (get(env, "/.config/libfonts/default-rendering.conf", settings))
+		if (get(env, "/.config/libfonts/default-rendering.conf", settings, ctx))
 			goto out;
-		if (get(env, "/.libfonts/default-rendering.conf", settings))
+		if (get(env, "/.libfonts/default-rendering.conf", settings, ctx))
 			goto out;
 	}
 
 	home = libfonts_gethome__(ctx);
 	if (home && *home) {
-		if (get(home, "/.config/libfonts/default-rendering.conf", settings))
+		if (get(home, "/.config/libfonts/default-rendering.conf", settings, ctx))
 			goto out;
-		if (get(home, "/.libfonts/default-rendering.conf", settings))
+		if (get(home, "/.libfonts/default-rendering.conf", settings, ctx))
 			goto out;
 	}
 
@@ -77,13 +79,13 @@ libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *sett
 			next = strchr(&env[1], ':');
 			len = next ? (size_t)(next - env) : strlen(env);
 			if (len)
-				if (getn(env, len, "/libfonts/default-rendering.conf", settings))
+				if (getn(env, len, "/libfonts/default-rendering.conf", settings, ctx))
 					goto out;
 			env += len + 1;
 		} while (next);
 	}
 
-	if (get("/etc", "/libfonts/default-rendering.conf", settings))
+	if (get("/etc", "/libfonts/default-rendering.conf", settings, ctx))
 		goto out;
 
 	ret = 0;
