@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "common.h"
+#ifndef TEST
 
 
 static int
@@ -115,3 +116,16 @@ libfonts_get_output_dpi(struct libfonts_output *output, const char *edid)
 
 	return 1;
 }
+
+
+#else
+
+
+int
+main(void) /* TODO add test */
+{
+	return 0;
+}
+
+
+#endif

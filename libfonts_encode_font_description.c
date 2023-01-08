@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "common.h"
+#ifndef TEST
+
 
 #define LIST_FIELDS(X)\
 	X(foundry)\
@@ -102,3 +104,16 @@ einval:
 	errno = EINVAL;
 	return -1;
 }
+
+
+#else
+
+
+int
+main(void) /* TODO add test */
+{
+	return 0;
+}
+
+
+#endif

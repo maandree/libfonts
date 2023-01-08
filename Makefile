@@ -25,17 +25,12 @@ OBJ =\
 	libfonts_get_subpixel_order_class.o\
 	libfonts_unget_subpixel_order_class.o
 
-TESTS =\
-	libfonts_calculate_subpixel_order.test\
-	libfonts_get_default_font_name.test\
-	libfonts_get_subpixel_order_class.test\
-	libfonts_unget_subpixel_order_class.test
-
 HDR =\
 	common.h\
 	libfonts.h
 
 LOBJ = $(OBJ:.o=.lo)
+TESTS = $(OBJ:.o=.test)
 
 
 all: libfonts.a libfonts.$(LIBEXT) $(TESTS)

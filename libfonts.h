@@ -1647,7 +1647,6 @@ int libfonts_get_default_font_by_name(enum libfonts_default_font *, const char *
  * @throws  EINVAL  Invalid font description
  */
 int libfonts_encode_font_description(const struct libfonts_font_description *, char[static 256]);
-/* TODO add test */
 
 /**
  * Decode an X Logical Font Description (XLFD) string
@@ -1659,7 +1658,6 @@ int libfonts_encode_font_description(const struct libfonts_font_description *, c
  * @throws  EINVAL  Invalid font description
  */
 int libfonts_decode_font_description(struct libfonts_font_description *, const char *);
-/* TODO add test */
 
 /**
  * Check if an X Logical Font Description (XLFD) matches
@@ -1762,7 +1760,6 @@ int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *,
  *                  non-invertable output transformation)
  */
 int libfonts_get_output_dpi(struct libfonts_output *, const char *);
-/* TODO add test */
 
 /**
  * Calculate the subpixel order on an output device after

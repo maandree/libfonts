@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "common.h"
+#ifndef TEST
+
 
 #define LIST_FIELDS_EXCEPT_FINAL(X)\
 	X(foundry)\
@@ -215,3 +217,16 @@ private:
 	desc->private_font_name = desc->_buf;
 	return 0;
 }
+
+
+#else
+
+
+int
+main(void) /* TODO add test */
+{
+	return 0;
+}
+
+
+#endif
