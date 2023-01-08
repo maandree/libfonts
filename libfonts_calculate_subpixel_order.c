@@ -134,7 +134,7 @@ known:
 #else
 
 
-static int
+static void
 test(int xtrans, int ytrans, int zscale, int xscale, int yscale)
 {
 #define T(IN, OUT, MAT)\
@@ -442,8 +442,6 @@ test(int xtrans, int ytrans, int zscale, int xscale, int yscale)
 	UNKNOWNX(GB_RB);
 	UNKNOWNX(RG_BB);
 	UNKNOWNX(BR_BG);
-
-	return 0;
 }
 
 int
