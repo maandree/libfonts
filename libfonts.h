@@ -1576,49 +1576,30 @@ struct libfonts_font_description {
  * Get the font a default font name aliases to
  * 
  * @param   font  The default font
- * @param   name  Output buffer for the font the default font is an alias
- *                for; will always be NUL-terminated (unless `size` is 0)
- * @param   size  Buffer size of `name`
- * @return        The minimum value required on `size` for a
- *                complete output to `name`, or -1 on failure
+ * @return        The font the default font is an alias for
+ *                (shall be deallocated using free(3) when no
+ *                longer used), or `NULL` on failure; in the
+ *                case that no font is found, `NULL` with be
+ *                returned without modifying `errno`
  * 
  * @throws  EINVAL  Unrecognised value on `font`
  */
-ssize_t libfonts_get_default_font(enum libfonts_default_font, char *, size_t);
-/* TODO implement libfonts_get_default_font
- * 
- * /etc/libfonts/default-fonts.conf
- * 
- *     sans-serif = $FONTNAME
- *     serif = $FONTNAME
- *     monospace = $FONTNAME
- * 
- * fallback, look in /etc/libfonts/default-fonts/sans-serif/
- *                   /etc/libfonts/default-fonts/serif/
- *                   /etc/libfonts/default-fonts/monospace/
- * 
- * as a last resort look around for some
- * font that matches the specification as
- * well as possible
- */
+char *libfonts_get_default_font(enum libfonts_default_font);
 
 /**
  * Get the alias for a default font
  * 
  * @param   font   The default font
- * @param   name   Output buffer for the font name; will always
- *                 be NUL-terminated (unless `size` is 0)
- * @param   size   Buffer size of `name`
  * @param   index  The index of the alias (some default fonts
  *                 have multiple aliases)
- * @return         The minimum value required on `size` for a
- *                 complete output to `name`, 0 if `index` is
- *                 equal to or greater than the number of
- *                 aliases, or -1 on failure
+ * @param   namep  Output parameter for the font name
+ * @return         If the alias exists, or 0 if `index` is equal to
+ *                 or greater than the number of aliases, or
+ *                 -1 on failure
  * 
  * @throws  EINVAL  Unrecognised value on `font`
  */
-ssize_t libfonts_get_default_font_name(enum libfonts_default_font, char *, size_t, size_t);
+int libfonts_get_default_font_name(enum libfonts_default_font, size_t, const char **);
 
 /**
  * Get a default font a font name represents
