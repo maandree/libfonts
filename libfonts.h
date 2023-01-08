@@ -1619,7 +1619,6 @@ ssize_t libfonts_get_default_font(enum libfonts_default_font, char *, size_t);
  * @throws  EINVAL  Unrecognised value on `font`
  */
 ssize_t libfonts_get_default_font_name(enum libfonts_default_font, char *, size_t, size_t);
-/* TODO add test */
 
 /**
  * Get a default font a font name represents
