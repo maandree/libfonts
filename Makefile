@@ -26,6 +26,7 @@ OBJ =\
 	libfonts_unget_subpixel_order_class.o
 
 TESTS =\
+	libfonts_calculate_subpixel_order.test\
 	libfonts_get_subpixel_order_class.test\
 	libfonts_unget_subpixel_order_class.test
 

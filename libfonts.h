@@ -1681,7 +1681,8 @@ int libfonts_do_font_descriptions_match(const char *, const char *);
  * @param   spec  The specification to test the description against, may include wildcards
  * @return        1 if the arguments match, 0 if they don't match
  */
-int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_description *, const struct libfonts_font_description *);
+int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_description *,
+                                                const struct libfonts_font_description *);
 /* TODO implement libfonts_do_decoded_font_descriptions_match */
 
 
@@ -1772,8 +1773,8 @@ int libfonts_get_output_dpi(struct libfonts_output *, const char *);
  * @param   transformation  The applied transformation
  * @return                  The device's logical subpixel order
  */
-enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order, const struct libfonts_transformation *);
-/* TODO add test */
+enum libfonts_subpixel_order libfonts_calculate_subpixel_order(enum libfonts_subpixel_order,
+                                                               const struct libfonts_transformation *);
 
 /**
  * Get the general subpixel layout, as well
