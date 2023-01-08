@@ -173,22 +173,22 @@ test(int xtrans, int ytrans, int zscale, int xscale, int yscale)
 	do {\
 		FLIP_(A, B);\
 		FLIP_(B, A);\
-	} while(0)
+	} while (0)
 #define FLOP(A, B)\
 	do {\
 		FLOP_(A, B);\
 		FLOP_(B, A);\
-	} while(0)
+	} while (0)
 #define TRANSPOSE(A, B)\
 	do {\
 		TRANSPOSE_(A, B);\
 		TRANSPOSE_(B, A);\
-	} while(0)
+	} while (0)
 #define ANTITRANSPOSE(A, B)\
 	do {\
 		ANTITRANSPOSE_(A, B);\
 		ANTITRANSPOSE_(B, A);\
-	} while(0)
+	} while (0)
 #define NONLINEAR(IN) NONLINEAR_(IN, NONLINEAR)
 #define UNKNOWN(IN) UNKNOWN_(IN, UNKNOWN)
 
@@ -201,17 +201,17 @@ test(int xtrans, int ytrans, int zscale, int xscale, int yscale)
 	do {\
 		M(A, B);\
 		M(BALANCED_##A, BALANCED_##B);\
-	} while(0)
+	} while (0)
 #define NONLINEARX(A)\
 	do {\
 		NONLINEAR(A);\
 		NONLINEAR(BALANCED_##A);\
-	} while(0)
+	} while (0)
 #define UNKNOWNX(A)\
 	do {\
 		UNKNOWN(A);\
 		UNKNOWN(BALANCED_##A);\
-	} while(0)
+	} while (0)
 
 	struct libfonts_transformation asis_matrix = {.m = {
 			{+xscale,       0, xtrans},

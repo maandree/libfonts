@@ -3,25 +3,6 @@
 #ifndef TEST
 
 
-#define LIST_ANTIALIASINGS(X)\
-	X(LIBFONTS_ANTIALIASING_UNSPECIFIED, "unspecified")\
-	X(LIBFONTS_ANTIALIASING_NONE, "none")\
-	X(LIBFONTS_ANTIALIASING_NONE, "aliased")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE, "greyscale")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE, "grayscale")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE, "grey")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE, "gray")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE, "antialiased")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE_FORCED, "greyscale!")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE_FORCED, "grayscale!")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE_FORCED, "grey!")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE_FORCED, "gray!")\
-	X(LIBFONTS_ANTIALIASING_GREYSCALE_FORCED, "antialiased!")\
-	X(LIBFONTS_ANTIALIASING_SUBPIXEL, "subpixel")\
-	X(LIBFONTS_ANTIALIASING_SUBPIXEL, "glitter")\
-	X(LIBFONTS_ANTIALIASING_SUBPIXEL_FORCED, "subpixel!")\
-	X(LIBFONTS_ANTIALIASING_SUBPIXEL_FORCED, "glitter!")
-
 int
 libfonts_parse_aa__(enum libfonts_antialiasing *outp, const char *value)
 {
@@ -29,7 +10,7 @@ libfonts_parse_aa__(enum libfonts_antialiasing *outp, const char *value)
 	if (!strcasecmp(value, S)) {\
 		*outp = C;\
 	} else
-	LIST_ANTIALIASINGS(X) {
+	LIST_ANTIALIASINGS(X,) {
 		return 0;
 	}
 #undef X
@@ -44,7 +25,30 @@ libfonts_parse_aa__(enum libfonts_antialiasing *outp, const char *value)
 int
 main(void)
 {
-	return 0; /* TODO add test */
+	enum libfonts_antialiasing res;
+	char buf[1024];
+	size_t i;
+
+#define X(C, S)\
+		do {\
+			res = 999;\
+			ASSERT(libfonts_parse_aa__(&res, S) == 1);\
+			ASSERT(res == C);\
+			strcpy(buf, S);\
+			for (i = 0; buf[i]; i++)\
+				buf[i] = toupper(buf[i]);\
+			res = 999;\
+			ASSERT(libfonts_parse_aa__(&res, buf) == 1);\
+			ASSERT(res == C);\
+		} while (0)
+	LIST_ANTIALIASINGS(X, ;);
+#undef X
+
+	res = 999;
+	ASSERT(libfonts_parse_aa__(&res, " something else ") == 0);
+	ASSERT(res == 999);
+
+	return 0;
 }
 
 

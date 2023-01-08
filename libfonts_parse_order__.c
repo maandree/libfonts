@@ -3,78 +3,6 @@
 #ifndef TEST
 
 
-#define LIST_SUBPIXEL_ORDERS(X)\
-	X(LIBFONTS_SUBPIXEL_ORDER_UNKNOWN, "unknown")\
-	X(LIBFONTS_SUBPIXEL_ORDER_NONRGB, "non-rgb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_NONLINEAR, "non-linear")\
-	X(LIBFONTS_SUBPIXEL_ORDER_OTHER, "other")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RGB, "rgb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_R_G_B, "r:g:b")\
-	X(LIBFONTS_SUBPIXEL_ORDER_R_G_B, "vrgb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BGR, "bgr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_B_G_R, "b:g:r")\
-	X(LIBFONTS_SUBPIXEL_ORDER_B_G_R, "vbgr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GBR, "gbr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_G_B_R, "g:b:r")\
-	X(LIBFONTS_SUBPIXEL_ORDER_G_B_R, "vgbr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RBG, "rbg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_R_B_G, "r:b:g")\
-	X(LIBFONTS_SUBPIXEL_ORDER_R_B_G, "vrbg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BRG, "brg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_B_R_G, "b:r:g")\
-	X(LIBFONTS_SUBPIXEL_ORDER_B_R_G, "vbrg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GRB, "grb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_G_R_B, "g:r:b")\
-	X(LIBFONTS_SUBPIXEL_ORDER_G_R_B, "vgrb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RR_GB, "rr:gb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GR_BR, "gr:br")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BG_RR, "bg:rr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RB_RG, "rb:rg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RR_BG, "rr:bg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BR_GR, "br:gr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GB_RR, "gb:rr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RG_RB, "rg:rb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GG_RB, "gg:rb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RG_BG, "rg:bg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BR_GG, "br:gg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GB_GR, "gb:gr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GG_BR, "gg:br")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BG_RG, "bg:rg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RB_GG, "rb:gg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GR_GB, "gr:gb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BB_RG, "bb:rg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RB_GB, "rb:gb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GR_BB, "gr:bb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BG_BR, "bg:br")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BB_GR, "bb:gr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_GB_RB, "gb:rb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_RG_BB, "rg:bb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BR_BG, "br:bg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RR_GB, "balanced rr:gb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_BR, "balanced gr:br")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_RR, "balanced bg:rr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_RG, "balanced rb:rg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RR_BG, "balanced rr:bg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_GR, "balanced br:gr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RR, "balanced gb:rr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_RB, "balanced rg:rb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GG_RB, "balanced gg:rb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BG, "balanced rg:bg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_GG, "balanced br:gg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_GR, "balanced gb:gr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GG_BR, "balanced gg:br")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_RG, "balanced bg:rg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_GG, "balanced rb:gg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_GB, "balanced gr:gb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BB_RG, "balanced bb:rg")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RB_GB, "balanced rb:gb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GR_BB, "balanced gr:bb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BG_BR, "balanced bg:br")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BB_GR, "balanced bb:gr")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_GB_RB, "balanced gb:rb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_RG_BB, "balanced rg:bb")\
-	X(LIBFONTS_SUBPIXEL_ORDER_BALANCED_BR_BG, "balanced br:bg")
-
 int
 libfonts_parse_order__(enum libfonts_subpixel_order *outp, const char *value)
 {
@@ -82,7 +10,7 @@ libfonts_parse_order__(enum libfonts_subpixel_order *outp, const char *value)
 	if (!strcasecmp(value, S)) {\
 		*outp = C;\
 	} else
-	LIST_SUBPIXEL_ORDERS(X) {
+	LIST_SUBPIXEL_ORDERS(X,) {
 		*outp = LIBFONTS_SUBPIXEL_ORDER_OTHER;
 		return 0;
 	}
@@ -98,7 +26,30 @@ libfonts_parse_order__(enum libfonts_subpixel_order *outp, const char *value)
 int
 main(void)
 {
-	return 0; /* TODO add test */
+	enum libfonts_subpixel_order res;
+	char buf[1024];
+	size_t i;
+
+#define X(C, S)\
+		do {\
+			res = 999;\
+			ASSERT(libfonts_parse_order__(&res, S) == 1);\
+			ASSERT(res == C);\
+			strcpy(buf, S);\
+			for (i = 0; buf[i]; i++)\
+				buf[i] = toupper(buf[i]);\
+			res = 999;\
+			ASSERT(libfonts_parse_order__(&res, buf) == 1);\
+			ASSERT(res == C);\
+		} while (0)
+	LIST_SUBPIXEL_ORDERS(X, ;);
+#undef X
+
+	res = 999;
+	ASSERT(libfonts_parse_order__(&res, " something else ") == 0);
+	ASSERT(res == LIBFONTS_SUBPIXEL_ORDER_OTHER);
+
+	return 0;
 }
 
 
