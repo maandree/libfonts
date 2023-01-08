@@ -3,14 +3,15 @@
 #ifndef TEST
 
 
-static char *
-find(const char *dir_part1, const char *dir_part2, const char *dir_part3, struct libfonts_context *ctx)
+static int
+find(char **outp, const char *dir_part1, const char *dir_part2, const char *dir_part3, struct libfonts_context *ctx)
 {
-	return NULL; /* TODO */
+	return 0; /* TODO */
 }
 
-static char *
-getn(const char *file_part1, size_t file_part1_len, const char *file_part2, const char *name, struct libfonts_context *ctx)
+static int
+getn(char **outp, const char *file_part1, size_t file_part1_len, const char *file_part2,
+     const char *name, struct libfonts_context *ctx)
 {
 	size_t file_part2_len = strlen(file_part2);
 	char *path;
@@ -22,7 +23,7 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2, cons
 	if (!path) {
 	enomem:
 		errno = ENOMEM;
-		return NULL; /* TODO abort function */
+		return -1;
 	}
 
 	memcpy(path, file_part1, file_part1_len);
@@ -35,13 +36,13 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2, cons
 	 */
 
 	free(path);
-	return NULL;
+	return 0;
 }
 
-static char *
-get(const char *file_part1, const char *file_part2, const char *name, struct libfonts_context *ctx)
+static int
+get(char **outp, const char *file_part1, const char *file_part2, const char *name, struct libfonts_context *ctx)
 {
-	return getn(file_part1, strlen(file_part1), file_part2, name, ctx);
+	return getn(outp, file_part1, strlen(file_part1), file_part2, name, ctx);
 }
 
 char *
@@ -49,7 +50,7 @@ libfonts_get_default_font(enum libfonts_default_font font, struct libfonts_conte
 {
 	const char *env, *var, *next, *confenv, *homeenv;
 	char *ret, *home = NULL;
-	int saved_errno = errno;
+	int r, saved_errno = errno;
 	size_t len;
 
 	if (font == LIBFONTS_DEFAULT_SANS_SERIF) {
@@ -72,52 +73,52 @@ libfonts_get_default_font(enum libfonts_default_font font, struct libfonts_conte
 
 	confenv = libfonts_getenv__("XDG_CONFIG_HOME", ctx);
 	if (confenv && *confenv) {
-		ret = get(confenv, "/libfonts/default-fonts.conf", var, ctx);
-		if (ret)
+		r = get(&ret, confenv, "/libfonts/default-fonts.conf", var, ctx);
+		if (r)
 			goto out;
 	}
 
 	homeenv = libfonts_getenv__("HOME", ctx);
 	if (homeenv && *homeenv) {
-		ret = get(homeenv, "/.config/libfonts/default-fonts.conf", var, ctx);
-		if (ret)
+		r = get(&ret, homeenv, "/.config/libfonts/default-fonts.conf", var, ctx);
+		if (r)
 			goto out;
-		ret = get(homeenv, "/.libfonts/default-fonts.conf", var, ctx);
-		if (ret)
+		r = get(&ret, homeenv, "/.libfonts/default-fonts.conf", var, ctx);
+		if (r)
 			goto out;
 	}
 
 	home = libfonts_gethome__(ctx);
 	if (home && *home) {
-		ret = get(home, "/.config/libfonts/default-fonts.conf", var, ctx);
-		if (ret)
+		r = get(&ret, home, "/.config/libfonts/default-fonts.conf", var, ctx);
+		if (r)
 			goto out;
-		ret = get(home, "/.libfonts/default-fonts.conf", var, ctx);
-		if (ret)
+		r = get(&ret, home, "/.libfonts/default-fonts.conf", var, ctx);
+		if (r)
 			goto out;
 	}
 
 	if (confenv && *confenv) {
-		ret = find(env, "/libfonts/", var, ctx);
-		if (ret)
+		r = find(&ret, env, "/libfonts/", var, ctx);
+		if (r)
 			goto out;
 	}
 
 	if (homeenv && *homeenv) {
-		ret = find(homeenv, "/.config/libfonts/", var, ctx);
-		if (ret)
+		r = find(&ret, homeenv, "/.config/libfonts/", var, ctx);
+		if (r)
 			goto out;
-		ret = find(homeenv, "/.libfonts/", var, ctx);
-		if (ret)
+		r = find(&ret, homeenv, "/.libfonts/", var, ctx);
+		if (r)
 			goto out;
 	}
 
 	if (home && *home) {
-		ret = find(home, "/.config/libfonts/", var, ctx);
-		if (ret)
+		r = find(&ret, home, "/.config/libfonts/", var, ctx);
+		if (r)
 			goto out;
-		ret = find(home, "/.libfonts/", var, ctx);
-		if (ret)
+		r = find(&ret, home, "/.libfonts/", var, ctx);
+		if (r)
 			goto out;
 	}
 
@@ -127,20 +128,20 @@ libfonts_get_default_font(enum libfonts_default_font font, struct libfonts_conte
 			next = strchr(&env[1], ':');
 			len = next ? (size_t)(next - env) : strlen(env);
 			if (len) {
-				ret = getn(env, len, "/libfonts/default-fonts.conf", var, ctx);
-				if (ret)
+				r = getn(&ret, env, len, "/libfonts/default-fonts.conf", var, ctx);
+				if (r)
 					goto out;
 			}
 			env += len + 1;
 		} while (next);
 	}
 
-	ret = get("/etc", "/libfonts/default-fonts.conf", var, ctx);
-	if (ret)
+	r = get(&ret, "/etc", "/libfonts/default-fonts.conf", var, ctx);
+	if (r)
 		goto out;
 
-	ret = find("/etc", "/libfonts/", var, ctx);
-	if (ret)
+	r = find(&ret, "/etc", "/libfonts/", var, ctx);
+	if (r)
 		goto out;
 
 	/* TODO 
@@ -150,9 +151,12 @@ libfonts_get_default_font(enum libfonts_default_font font, struct libfonts_conte
 	 */
 
 	ret = NULL;
+	r = 0;
 
 out:
 	free(home);
+	if (r < 0)
+		return NULL;
 	errno = saved_errno;
 	return ret;
 }

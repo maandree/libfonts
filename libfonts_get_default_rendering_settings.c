@@ -17,7 +17,7 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 	if (!path) {
 	enomem:
 		errno = ENOMEM;
-		return 0; /* TODO abort function */
+		return -1;
 	}
 
 	memcpy(path, file_part1, file_part1_len);
@@ -53,23 +53,29 @@ libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *sett
 	}
 
 	env = libfonts_getenv__("XDG_CONFIG_HOME", ctx);
-	if (env && *env)
-		if (get(env, "/libfonts/default-rendering.conf", settings, ctx))
+	if (env && *env) {
+		ret = get(env, "/libfonts/default-rendering.conf", settings, ctx);
+		if (ret)
 			goto out;
+	}
 
 	env = libfonts_getenv__("HOME", ctx);
 	if (env && *env) {
-		if (get(env, "/.config/libfonts/default-rendering.conf", settings, ctx))
+		ret = get(env, "/.config/libfonts/default-rendering.conf", settings, ctx);
+		if (ret)
 			goto out;
-		if (get(env, "/.libfonts/default-rendering.conf", settings, ctx))
+		ret = get(env, "/.libfonts/default-rendering.conf", settings, ctx);
+		if (ret)
 			goto out;
 	}
 
 	home = libfonts_gethome__(ctx);
 	if (home && *home) {
-		if (get(home, "/.config/libfonts/default-rendering.conf", settings, ctx))
+		ret = get(home, "/.config/libfonts/default-rendering.conf", settings, ctx);
+		if (ret)
 			goto out;
-		if (get(home, "/.libfonts/default-rendering.conf", settings, ctx))
+		ret = get(home, "/.libfonts/default-rendering.conf", settings, ctx);
+		if (ret)
 			goto out;
 	}
 
@@ -78,21 +84,21 @@ libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *sett
 		do {
 			next = strchr(&env[1], ':');
 			len = next ? (size_t)(next - env) : strlen(env);
-			if (len)
-				if (getn(env, len, "/libfonts/default-rendering.conf", settings, ctx))
+			if (len) {
+				ret = getn(env, len, "/libfonts/default-rendering.conf", settings, ctx);
+				if (ret)
 					goto out;
+			}
 			env += len + 1;
 		} while (next);
 	}
 
-	if (get("/etc", "/libfonts/default-rendering.conf", settings, ctx))
-		goto out;
-
-	ret = 0;
+	ret = get("/etc", "/libfonts/default-rendering.conf", settings, ctx);
 
 out:
 	free(home);
-	errno = saved_errno;
+	if (ret >= 0)
+		errno = saved_errno;
 	return ret;
 }
 
