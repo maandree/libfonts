@@ -33,6 +33,10 @@ eq(double a, double b)
 }
 
 
+const char *libfonts_getenv__(const char *name, struct libfonts_context *ctx);
+char *libfonts_gethome__(struct libfonts_context *ctx);
+
+
 #ifdef TEST
 
 # define ASSERT(ASSERTION)\

@@ -10,43 +10,6 @@ find(const char *dir_part1, const char *dir_part2, const char *dir_part3)
 }
 
 static char *
-gethome(void)
-{
-	uid_t uid = getuid();
-	size_t size = 512;
-	char *buf = NULL, *new;
-	char *ret = NULL;
-	struct passwd pw, *pwp;
-	int err;
-
-	goto beginning;
-
-	do {
-		if (size > SIZE_MAX / 2)
-			goto enomem;
-		size *= 2;
-	beginning:
-		new = realloc(buf, size);
-		if (!new) {
-		enomem:
-			free(buf);
-			errno = ENOMEM;
-			return NULL;
-		}
-		buf = new;
-	} while ((err = getpwuid_r(uid, &pw, buf, size, &pwp)) == ERANGE);
-	if (err) {
-		free(buf);
-		return NULL;
-	}
-
-	if (pwp && pwp->pw_dir)
-		ret = strdup(pwp->pw_dir);
-	free(buf);
-	return ret;
-}
-
-static char *
 getn(const char *file_part1, size_t file_part1_len, const char *file_part2, const char *name)
 {
 	size_t file_part2_len = strlen(file_part2);
@@ -82,9 +45,9 @@ get(const char *file_part1, const char *file_part2, const char *name)
 }
 
 char *
-libfonts_get_default_font(enum libfonts_default_font font)
+libfonts_get_default_font(enum libfonts_default_font font, struct libfonts_context *ctx)
 {
-	const char *env, *var, *next;
+	const char *env, *var, *next, *confenv, *homeenv;
 	char *ret, *home = NULL;
 	int saved_errno = errno;
 	size_t len;
@@ -103,28 +66,28 @@ libfonts_get_default_font(enum libfonts_default_font font)
 		return NULL;
 	}
 
-	ret = getenv(env);
-	if (ret && *ret)
-		return strdup(ret);
+	env = libfonts_getenv__(env, ctx);
+	if (env && *env)
+		return strdup(env);
 
-	env = getenv("XDG_CONFIG_HOME");
-	if (env && *env) {
-		ret = get(env, "/libfonts/default-fonts.conf", var);
+	confenv = libfonts_getenv__("XDG_CONFIG_HOME", ctx);
+	if (confenv && *confenv) {
+		ret = get(confenv, "/libfonts/default-fonts.conf", var);
 		if (ret)
 			goto out;
 	}
 
-	env = getenv("HOME");
-	if (env && *env) {
-		ret = get(env, "/.config/libfonts/default-fonts.conf", var);
+	homeenv = libfonts_getenv__("HOME", ctx);
+	if (homeenv && *homeenv) {
+		ret = get(homeenv, "/.config/libfonts/default-fonts.conf", var);
 		if (ret)
 			goto out;
-		ret = get(env, "/.libfonts/default-fonts.conf", var);
+		ret = get(homeenv, "/.libfonts/default-fonts.conf", var);
 		if (ret)
 			goto out;
 	}
 
-	home = gethome();
+	home = libfonts_gethome__(ctx);
 	if (home && *home) {
 		ret = get(home, "/.config/libfonts/default-fonts.conf", var);
 		if (ret)
@@ -134,33 +97,31 @@ libfonts_get_default_font(enum libfonts_default_font font)
 			goto out;
 	}
 
-	env = getenv("XDG_CONFIG_HOME");
-	if (env && *env) {
+	if (confenv && *confenv) {
 		ret = find(env, "/libfonts/", var);
 		if (ret)
 			goto out;
 	}
 
-	env = getenv("HOME");
-	if (env && *env) {
-		ret = find(env, "/.config/libfonts/", var);
+	if (homeenv && *homeenv) {
+		ret = find(homeenv, "/.config/libfonts/", var);
 		if (ret)
 			goto out;
-		ret = find(env, "/.libfonts/", var);
+		ret = find(homeenv, "/.libfonts/", var);
 		if (ret)
 			goto out;
 	}
 
 	if (home && *home) {
-		ret = find(env, "/.config/libfonts/", var);
+		ret = find(home, "/.config/libfonts/", var);
 		if (ret)
 			goto out;
-		ret = find(env, "/.libfonts/", var);
+		ret = find(home, "/.libfonts/", var);
 		if (ret)
 			goto out;
 	}
 
-	env = getenv("XDG_CONFIG_DIRS");
+	env = libfonts_getenv__("XDG_CONFIG_DIRS", ctx);
 	if (env && *env) {
 		do {
 			next = strchr(&env[1], ':');

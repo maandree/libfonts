@@ -1571,11 +1571,53 @@ struct libfonts_font_description {
 	char _buf[256];
 };
 
+/**
+ * Structure that can be used to spoof the
+ * environment the library is executed in
+ */
+struct libfonts_context {
+	/**
+	 * Environment variables to add or override
+	 *
+	 * `libfonts_used_environs` can be used to
+	 * enumerate the environment variables that
+	 * affect the execution of the environment
+	 */
+	char **environ;
+
+	/**
+	 * The real user ID of the process
+	 *
+	 * Only used if `.use_context_uid` is non-zero
+	 */
+	uid_t uid;
+
+	/**
+	 * Non-zero to remove all environment
+	 * variables that are not included in
+	 * `.environ`
+	 */
+	int ignore_process_environ;
+
+	/**
+	 * Whether `.uid` is used
+	 */
+	int use_context_uid;
+};
+
+
+/**
+ * `NULL`-terminated list of environment variables
+ * that affect the execution of the library
+ */
+extern const char *const libfonts_used_environs[];
+
 
 /**
  * Get the font a default font name aliases to
  * 
  * @param   font  The default font
+ * @param   ctx   Optional `struct libfonts_context`
  * @return        The font the default font is an alias for
  *                (shall be deallocated using free(3) when no
  *                longer used), or `NULL` on failure; in the
@@ -1584,7 +1626,7 @@ struct libfonts_font_description {
  * 
  * @throws  EINVAL  Unrecognised value on `font`
  */
-char *libfonts_get_default_font(enum libfonts_default_font);
+char *libfonts_get_default_font(enum libfonts_default_font, struct libfonts_context *);
 
 /**
  * Get the alias for a default font
@@ -1674,11 +1716,12 @@ int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descr
  * @param   settings  Output parameter for the rendering settings;
  *                    `settings->dpi_x` and `settings->dpi_y` will
  *                    have a fallback value assigned if configured to 0
+ * @param   ctx       Optional `struct libfonts_context`
  * @return            1 if rendering settings where found,
  *                    0 otherwise (`*settings` will be filled with fallback values),
  *                    -1 on failure
  */
-int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *);
+int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *, struct libfonts_context *);
 /* TODO implement libfonts_get_default_rendering_settings
  * 
  * /etc/libfonts/default-rendering.conf
@@ -1703,11 +1746,12 @@ int libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *
  * 
  * @param   settings  Output parameter for the rendering settings
  * @param   name      The EDID (or other identifier) of the output
+ * @param   ctx       Optional `struct libfonts_context`
  * @return            1 if rendering settings where found,
  *                    0 otherwise (`*settings` will be unmodified),
  *                    -1 on failure
  */
-int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *);
+int libfonts_get_output_rendering_settings(struct libfonts_rendering_settings *, const char *, struct libfonts_context *);
 /* TODO implement libfonts_get_output_rendering_settings
  * 
  * /etc/libfonts/output-rendering.conf

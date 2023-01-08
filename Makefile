@@ -16,7 +16,7 @@ LIB_VERSION = $(LIB_MAJOR).$(LIB_MINOR)
 LIB_NAME = fonts
 
 
-OBJ =\
+PUBLIC_OBJ =\
 	libfonts_calculate_subpixel_order.o\
 	libfonts_decode_font_description.o\
 	libfonts_encode_font_description.o\
@@ -24,14 +24,20 @@ OBJ =\
 	libfonts_get_default_font_name.o\
 	libfonts_get_output_dpi.o\
 	libfonts_get_subpixel_order_class.o\
-	libfonts_unget_subpixel_order_class.o
+	libfonts_unget_subpixel_order_class.o\
+	libfonts_used_environs.o
+
+OBJ =\
+	$(PUBLIC_OBJ)\
+	libfonts_getenv__.o\
+	libfonts_gethome__.o\
 
 HDR =\
 	common.h\
 	libfonts.h
 
 LOBJ = $(OBJ:.o=.lo)
-TESTS = $(OBJ:.o=.test)
+TESTS = $(PUBLIC_OBJ:.o=.test)
 
 
 all: libfonts.a libfonts.$(LIBEXT) $(TESTS)
