@@ -402,6 +402,22 @@ main(void)
 	ASSERT(eq(output.dpi_y, 2.54 * 400 / 0x99));
 	ASSERT(eq(output.dpi_x, 2.54 * 500 / 0x88));
 
+	output.unrotated_output_width = 400;
+	output.unrotated_output_height = 500;
+	output.dpi_x = 100;
+	output.dpi_y = 150;
+	memset(edid, '0', sizeof(edid));
+	memcpy(edid, "00""FF""FF""FF""FF""FF""FF""00", 8 * 2);
+	edid[21 * 2 + 0] = '9';
+	edid[21 * 2 + 1] = '9';
+	edid[22 * 2 + 0] = '8';
+	edid[22 * 2 + 1] = '8';
+	edid[400] = '\0';
+	memcpy(&output.output_transformation, &rot90cw_matrix, sizeof(struct libfonts_transformation));
+	ASSERT(libfonts_get_output_dpi(&output, edid) == 1);
+	ASSERT(eq(output.dpi_y, 2.54 * 400 / 0x99));
+	ASSERT(eq(output.dpi_x, 2.54 * 500 / 0x88));
+
 	return 0;
 }
 
