@@ -9,6 +9,12 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 {
 	size_t file_part2_len = strlen(file_part2);
 	char *path;
+	int fd;
+	ssize_t len;
+	char *line, *buf = NULL;
+	size_t size = 0, off = 0, avail = 0;
+	char *value;
+	unsigned int found_fields = 0;
 
 	if (file_part1_len > SIZE_MAX - file_part2_len - 1)
 		goto enomem;
@@ -23,8 +29,80 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 	memcpy(path, file_part1, file_part1_len);
 	memcpy(&path[file_part1_len], file_part2, file_part2_len + 1);
 
-	/* TODO (use LIST_RENDERING_SETTINGS) */
+open_again:
+	fd = open(path, O_RDONLY);
+	if (fd < 0) {
+		switch (errno) {
+		case EINTR:
+			goto open_again;
+		case EMFILE:
+		case ENFILE:
+		case ENOMEM:
+		case ENOSPC:
+			free(path);
+			return -1;
+		case EFBIG:
+		case EOVERFLOW:
+		case EISDIR:
+		case ELOOP:
+		case ENODEV:
+		case ENOTDIR:
+		case ENXIO:
+			/* TODO print warning using `ctx` */
+			goto out;
+		default:
+			goto out;
+		}
+	}
 
+	for (;;) {
+		len = libfonts_getline__(fd, &line, &buf, &size, &off, &avail);
+		if (len < 0) {
+			if (errno == EINTR)
+				continue;
+			free(buf);
+			free(path);
+			close(fd);
+			return -1;
+		}
+		if (!len)
+			break;
+		line[len -= 1] = '\0';
+
+		while (isblank(*line))
+			line++;
+		if (!*line || *line == '#')
+			continue;
+		while (len && isblank(line[len - 1]))
+			len -= 1;
+		line[len] = '\0';
+
+		value = libfonts_confsplit__(line);
+		if (!value) {
+			/* TODO warning */
+			continue;
+		}
+
+#define X(INDEX, CONFNAME, CNAME, DEFVAL, PARSER)\
+		if (!strcmp(line, CONFNAME)) {\
+			if (found_fields & (1U << INDEX)) {\
+				/* TODO warning */\
+			}\
+			found_fields |= (1U << INDEX);\
+			if (!PARSER(&settings->CNAME, value)) {\
+				/* TODO warning */\
+			}\
+		} else
+		LIST_RENDERING_SETTINGS(X,) {
+			/* TODO warning */
+		}
+#undef X
+	}
+
+	free(buf);
+	close(fd);
+
+out:
 	free(path);
 	return 1;
 }
@@ -47,7 +125,7 @@ libfonts_get_default_rendering_settings(struct libfonts_rendering_settings *sett
 	size_t len;
 
 	if (settings) {
-#define X(CONFNAME, CNAME, DEFVAL) settings->CNAME = DEFVAL
+#define X(INDEX, CONFNAME, CNAME, DEFVAL, PARSER) settings->CNAME = DEFVAL
 		LIST_RENDERING_SETTINGS(X, ;);
 #undef X
 	}

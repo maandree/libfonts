@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "common.h"
+#ifndef TEST
 
 
 char *
@@ -38,3 +39,16 @@ libfonts_gethome__(struct libfonts_context *ctx)
 	free(buf);
 	return ret;
 }
+
+
+#else
+
+
+int
+main(void)
+{
+	return 0; /* TODO add test */
+}
+
+
+#endif

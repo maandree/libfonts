@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "common.h"
+#ifndef TEST
 
 
 const char *
@@ -28,3 +29,16 @@ ok:
 				return *envp;
 	return ctx->ignore_process_environ ? NULL : getenv(name);
 }
+
+
+#else
+
+
+int
+main(void)
+{
+	return 0; /* TODO add test */
+}
+
+
+#endif

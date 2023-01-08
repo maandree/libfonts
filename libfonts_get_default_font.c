@@ -15,6 +15,13 @@ getn(char **outp, const char *file_part1, size_t file_part1_len, const char *fil
 {
 	size_t file_part2_len = strlen(file_part2);
 	char *path;
+	int fd;
+	ssize_t len;
+	char *line, *buf = NULL;
+	size_t size = 0, off = 0, avail = 0;
+	char *value;
+
+	*outp = NULL;
 
 	if (file_part1_len > SIZE_MAX - file_part2_len - 1)
 		goto enomem;
@@ -29,14 +36,85 @@ getn(char **outp, const char *file_part1, size_t file_part1_len, const char *fil
 	memcpy(path, file_part1, file_part1_len);
 	memcpy(&path[file_part1_len], file_part2, file_part2_len + 1);
 
-	/* TODO
-	 *     sans-serif = $FONTNAME
-	 *     serif = $FONTNAME
-	 *     monospace = $FONTNAME
-	 */
+open_again:
+	fd = open(path, O_RDONLY);
+	if (fd < 0) {
+		switch (errno) {
+		case EINTR:
+			goto open_again;
+		case EMFILE:
+		case ENFILE:
+		case ENOMEM:
+		case ENOSPC:
+			free(path);
+			return -1;
+		case EFBIG:
+		case EOVERFLOW:
+		case EISDIR:
+		case ELOOP:
+		case ENODEV:
+		case ENOTDIR:
+		case ENXIO:
+			/* TODO print warning using `ctx` */
+			goto out;
+		default:
+			goto out;
+		}
+	}
 
+	for (;;) {
+		len = libfonts_getline__(fd, &line, &buf, &size, &off, &avail);
+		if (len < 0) {
+			if (errno == EINTR)
+				continue;
+			free(*outp);
+			*outp = NULL;
+		fail:
+			free(buf);
+			free(path);
+			close(fd);
+			return -1;
+		}
+		if (!len)
+			break;
+		line[len -= 1] = '\0';
+
+		while (isblank(*line)) {
+			line++;
+			len--;
+		}
+		if (!*line || *line == '#')
+			continue;
+		while (len && isblank(line[len - 1]))
+			len -= 1;
+		line[len] = '\0';
+
+		value = libfonts_confsplit__(line);
+		if (!value) {
+			/* TODO warning */
+			continue;
+		}
+
+		if (!strcmp(line, name)) {
+			if (*outp) {
+				/* TODO warning */
+				free(*outp);
+				*outp = NULL;
+			}
+			*outp = strdup(value);
+			if (!*outp)
+				goto fail;
+		} else if (strcmp(line, "sans-serif") && strcmp(line, "serif") && strcmp(line, "monospace")) {
+			/* TODO warning */
+		}
+	}
+
+	free(buf);
+	close(fd);
+
+out:
 	free(path);
-	return 0;
+	return *outp != NULL;
 }
 
 static int

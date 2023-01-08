@@ -31,15 +31,21 @@ PUBLIC_OBJ =\
 
 OBJ =\
 	$(PUBLIC_OBJ)\
+	libfonts_confsplit__.o\
 	libfonts_getenv__.o\
 	libfonts_gethome__.o\
+	libfonts_getline__.o\
+	libfonts_parse_aa__.o\
+	libfonts_parse_double__.o\
+	libfonts_parse_order__.o\
+	libfonts_parse_uint32__.o
 
 HDR =\
 	common.h\
 	libfonts.h
 
 LOBJ = $(OBJ:.o=.lo)
-TESTS = $(PUBLIC_OBJ:.o=.test)
+TESTS = $(OBJ:.o=.test)
 
 
 all: libfonts.a libfonts.$(LIBEXT) $(TESTS)
