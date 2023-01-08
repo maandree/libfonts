@@ -67,7 +67,7 @@ main(void)
 	} while (0)
 
 	errno = 0;
-	ASSERT(libfonts_get_default_font_name(-1, 0, &r) == -1);
+	ASSERT(libfonts_get_default_font_name((enum libfonts_default_font)~1, 0, &r) == -1);
 	ASSERT(errno == EINVAL);
 
 	errno = 0;

@@ -6,6 +6,8 @@
 int
 libfonts_parse_double__(double *outp, const char *value)
 {
+	(void) outp;
+	(void) value;
 	return 0; /* TODO implement */
 }
 

@@ -19,15 +19,11 @@ libfonts_calculate_subpixel_order(enum libfonts_subpixel_order unrotated, const 
 	double x[4], y[4], xmin, ymin, xmax, ymax, t1, t2;
 	int trans, i, j;
 
-	switch (unrotated) {
-	case LIBFONTS_SUBPIXEL_ORDER_UNKNOWN:
-	case LIBFONTS_SUBPIXEL_ORDER_NONRGB:
-	case LIBFONTS_SUBPIXEL_ORDER_NONLINEAR:
-	case LIBFONTS_SUBPIXEL_ORDER_OTHER:
+	if (unrotated == LIBFONTS_SUBPIXEL_ORDER_UNKNOWN ||
+	    unrotated == LIBFONTS_SUBPIXEL_ORDER_NONRGB ||
+	    unrotated == LIBFONTS_SUBPIXEL_ORDER_NONLINEAR ||
+	    unrotated == LIBFONTS_SUBPIXEL_ORDER_OTHER)
 		return unrotated;
-	default:
-		break;
-	}
 
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
@@ -108,7 +104,7 @@ known:
 		if (unrotated <= LIBFONTS_SUBPIXEL_ORDER_G_R_B)
 			return unrotated ^ 1;
 		else
-			return 7 - (unrotated & 7) + (unrotated & ~7);
+			return 7 - (unrotated & 7) + (unrotated & (enum libfonts_subpixel_order)~7U);
 
 	case FLOPPED:
 		if (unrotated <= LIBFONTS_SUBPIXEL_ORDER_G_R_B)
@@ -126,7 +122,7 @@ known:
 		return unrotated;
 
 	default:
-		return ((unrotated + trans) & 3) + (unrotated & ~3);
+		return (enum libfonts_subpixel_order)((((int)unrotated + trans) & 3) + ((int)unrotated & ~3));
 	}
 }
 
@@ -250,9 +246,9 @@ test(int xtrans, int ytrans, int zscale, int xscale, int yscale)
 			{-xscale,       0, ytrans},
 			{      0,       0, zscale}}};
 	struct libfonts_transformation nonlinear_matrix = {.m = {
-			{+xscale, +yscale / 2., xtrans},
-			{      0, +yscale,      ytrans},
-			{      0,       0,      zscale}}};
+			{+xscale, +yscale / (double)2, xtrans},
+			{      0, +yscale,             ytrans},
+			{      0,       0,             zscale}}};
 	struct libfonts_transformation unknown_matrix = {.m = {
 			{0, 0, 0},
 			{0, 0, 0},

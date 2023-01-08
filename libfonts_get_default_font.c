@@ -6,6 +6,11 @@
 static int
 find(char **outp, const char *dir_part1, const char *dir_part2, const char *dir_part3, struct libfonts_context *ctx)
 {
+	(void) outp;
+	(void) dir_part1;
+	(void) dir_part2;
+	(void) dir_part3;
+	(void) ctx;
 	return 0; /* TODO */
 }
 

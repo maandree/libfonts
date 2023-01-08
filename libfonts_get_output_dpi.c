@@ -100,8 +100,8 @@ libfonts_get_output_dpi(struct libfonts_output *output, const char *edid)
 		if (!width || !height)
 			return 0;
 
-		output->dpi_x = (double)output->unrotated_output_width  / (double)width  * 2.54;
-		output->dpi_y = (double)output->unrotated_output_height / (double)height * 2.54;
+		output->dpi_x = (double)output->unrotated_output_width  / (double)width  * 254 / 100;
+		output->dpi_y = (double)output->unrotated_output_height / (double)height * 254 / 100;
 	}
 
 	if (!invert(&invtrans, &output->output_transformation)) {
@@ -154,6 +154,17 @@ main(void)
 #define T(MAT, XOUT, YOUT) T_(MAT, XOUT, YOUT, 1)
 #define ASIS(MAT) T(MAT, 100, 150)
 #define SWAPS(MAT) T(MAT, 150, 100)
+
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wunsuffixed-float-constants"
+#endif
+
+	const double sqrt1half = 0.7071067811865475;
+
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic pop
+#endif
 
 	char edid[512];
 	struct libfonts_output output;
@@ -222,9 +233,9 @@ main(void)
 			{+1, +1, 0},
 			{ 0,  0, 1}}};
 	struct libfonts_transformation rot45cw_matrix = {.m = {
-			{+0.7071067811865475, -0.7071067811865475, 0},
-			{+0.7071067811865475, +0.7071067811865475, 0},
-			{ 0,                   0,                  1}}};
+			{+sqrt1half, -sqrt1half, 0},
+			{+sqrt1half, +sqrt1half, 0},
+			{ 0,          0,         1}}};
 	struct libfonts_transformation uninvertable_matrix = {.m = {
 			{1, 1, 0},
 			{1, 1, 0},
@@ -254,7 +265,7 @@ main(void)
 	T(xshear_matrix, 150, 150); /* not important */
 	T(yshear_matrix, 100, 150); /* not important */
 
-	T(rot45cw_matrix, 150 * 0.7071067811865475, 150 * 0.7071067811865475); /* not important */
+	T(rot45cw_matrix, 150 * sqrt1half, 150 * sqrt1half); /* not important */
 
 	T_(uninvertable_matrix, 0, 0, 0);
 	T_(null_matrix, 0, 0, 0);
@@ -367,8 +378,8 @@ main(void)
 	edid[256] = '\0';
 	memcpy(&output.output_transformation, &asis_matrix, sizeof(struct libfonts_transformation));
 	ASSERT(libfonts_get_output_dpi(&output, edid) == 1);
-	ASSERT(eq(output.dpi_x, 2.54 * 400 / 0xAA));
-	ASSERT(eq(output.dpi_y, 2.54 * 500 / 0xAA));
+	ASSERT(eq(output.dpi_x, (double)254 / 100 * 400 / 0xAA));
+	ASSERT(eq(output.dpi_y, (double)254 / 100 * 500 / 0xAA));
 
 	output.unrotated_output_width = 400;
 	output.unrotated_output_height = 500;
@@ -383,8 +394,8 @@ main(void)
 	edid[256] = '\0';
 	memcpy(&output.output_transformation, &asis_matrix, sizeof(struct libfonts_transformation));
 	ASSERT(libfonts_get_output_dpi(&output, edid) == 1);
-	ASSERT(eq(output.dpi_x, 2.54 * 400 / 0x99));
-	ASSERT(eq(output.dpi_y, 2.54 * 500 / 0x88));
+	ASSERT(eq(output.dpi_x, (double)254 / 100 * 400 / 0x99));
+	ASSERT(eq(output.dpi_y, (double)254 / 100 * 500 / 0x88));
 
 	output.unrotated_output_width = 400;
 	output.unrotated_output_height = 500;
@@ -399,8 +410,8 @@ main(void)
 	edid[256] = '\0';
 	memcpy(&output.output_transformation, &rot90cw_matrix, sizeof(struct libfonts_transformation));
 	ASSERT(libfonts_get_output_dpi(&output, edid) == 1);
-	ASSERT(eq(output.dpi_y, 2.54 * 400 / 0x99));
-	ASSERT(eq(output.dpi_x, 2.54 * 500 / 0x88));
+	ASSERT(eq(output.dpi_y, (double)254 / 100 * 400 / 0x99));
+	ASSERT(eq(output.dpi_x, (double)254 / 100 * 500 / 0x88));
 
 	output.unrotated_output_width = 400;
 	output.unrotated_output_height = 500;
@@ -415,8 +426,8 @@ main(void)
 	edid[400] = '\0';
 	memcpy(&output.output_transformation, &rot90cw_matrix, sizeof(struct libfonts_transformation));
 	ASSERT(libfonts_get_output_dpi(&output, edid) == 1);
-	ASSERT(eq(output.dpi_y, 2.54 * 400 / 0x99));
-	ASSERT(eq(output.dpi_x, 2.54 * 500 / 0x88));
+	ASSERT(eq(output.dpi_y, (double)254 / 100 * 400 / 0x99));
+	ASSERT(eq(output.dpi_x, (double)254 / 100 * 500 / 0x88));
 
 	return 0;
 }

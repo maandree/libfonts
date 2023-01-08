@@ -10,11 +10,11 @@ libfonts_unget_subpixel_order_class(enum libfonts_subpixel_order *orderp,
                                     enum libfonts_subpixel_colour cell2,
                                     enum libfonts_subpixel_colour cell3)
 {
-	int i;
+	unsigned int i;
 
-	if (cell1 < 0 || cell1 > 2 ||
-	    cell2 < 0 || cell2 > 2 ||
-	    cell3 < 0 || cell3 > 2 ||
+	if ((uintmax_t)cell1 > 2 ||
+	    (uintmax_t)cell2 > 2 ||
+	    (uintmax_t)cell3 > 2 ||
 	    cell1 == cell2 ||
 	    cell2 == cell3 ||
 	    cell3 == cell1) {
@@ -30,9 +30,11 @@ libfonts_unget_subpixel_order_class(enum libfonts_subpixel_order *orderp,
 	} else if (layout == LIBFONTS_SUBPIXEL_ORDER_CLASS_123 || layout == LIBFONTS_SUBPIXEL_ORDER_CLASS_1_2_3) {
 		if (orderp) {
 			/* RGB, BGR, GBR, RBG, BRG, GRB */
-			i = ((cell2 + 2) % 3) * 2;
-			i += (cell1 < cell3) ^ (cell2 == LIBFONTS_SUBPIXEL_COLOUR_GREEN);
-			*orderp = i * 2 + (layout == LIBFONTS_SUBPIXEL_ORDER_CLASS_1_2_3) + LIBFONTS_SUBPIXEL_ORDER_RGB;
+			i = (unsigned int)((cell2 + 2) % 3) * 2;
+			i += (unsigned int)(cell1 < cell3) ^ (cell2 == LIBFONTS_SUBPIXEL_COLOUR_GREEN);
+			*orderp = (enum libfonts_subpixel_order)(i * 2 +
+			                                         (layout == LIBFONTS_SUBPIXEL_ORDER_CLASS_1_2_3) +
+			                                         LIBFONTS_SUBPIXEL_ORDER_RGB);
 		}
 		return 1;
 
@@ -41,7 +43,7 @@ libfonts_unget_subpixel_order_class(enum libfonts_subpixel_order *orderp,
 			/* RGB, RBG, GRB, GBR, BRG, BGR */
 			i = (cell1 * 2) + (cell2 > cell3);
 			*orderp = i * 4 + (layout - LIBFONTS_SUBPIXEL_ORDER_CLASS_11_23) % 4 + LIBFONTS_SUBPIXEL_ORDER_RR_GB;
-			*orderp += (layout >= LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_11_23) * 24;
+			*orderp += (enum libfonts_subpixel_order)((layout >= LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_11_23) * 24);
 		}
 		return 1;
 
@@ -69,7 +71,7 @@ main(void)
 #define T_(ORDER, LAYOUT, C1, C2, C3)\
 	do {\
 		errno = 0;\
-		order = -1;\
+		order = (enum libfonts_subpixel_order)~1;\
 		ASSERT(libfonts_unget_subpixel_order_class(&order, LAYOUT, C1, C2, C3) == 1);\
 		ASSERT(order == ORDER);\
 		ASSERT(!errno);\
@@ -82,7 +84,7 @@ main(void)
 #define TU_(LAYOUT, C1, C2, C3)\
 	do {\
 		errno = 0;\
-		order = -1;\
+		order = (enum libfonts_subpixel_order)~1;\
 		ASSERT(libfonts_unget_subpixel_order_class(&order, LAYOUT, C1, C2, C3) == 0);\
 		ASSERT(order == LIBFONTS_SUBPIXEL_ORDER_UNKNOWN);\
 		ASSERT(!errno);\
@@ -111,18 +113,18 @@ main(void)
 	TU(OTHER, G, R, B);
 	TU(OTHER, B, G, R);
 
-	TE(OTHER, -1, G, B);
-	TE(OTHER, R, -1, B);
-	TE(OTHER, R, G, -1);
-	TE(OTHER, -1, -2, B);
+	TE(OTHER, (enum libfonts_subpixel_colour)~1, G, B);
+	TE(OTHER, R, (enum libfonts_subpixel_colour)~1, B);
+	TE(OTHER, R, G, (enum libfonts_subpixel_colour)~1);
+	TE(OTHER, (enum libfonts_subpixel_colour)~1, (enum libfonts_subpixel_colour)~2, B);
 	TE(OTHER, 3, G, B);
 	TE(OTHER, R, 3, B);
 	TE(OTHER, R, G, 3);
 	TE(OTHER, R, 3, 4);
-	TE(123, -1, G, B);
-	TE(123, R, -1, B);
-	TE(123, R, G, -1);
-	TE(123, -1, -2, B);
+	TE(123, (enum libfonts_subpixel_colour)~1, G, B);
+	TE(123, R, (enum libfonts_subpixel_colour)~1, B);
+	TE(123, R, G, (enum libfonts_subpixel_colour)~1);
+	TE(123, (enum libfonts_subpixel_colour)~1, (enum libfonts_subpixel_colour)~2, B);
 	TE(123, 3, G, B);
 	TE(123, R, 3, B);
 	TE(123, R, G, 3);
@@ -130,7 +132,7 @@ main(void)
 	TE(123, R, R, G);
 	TE(123, R, G, R);
 	TE(123, R, G, G);
-	TE_(-1, R, G, B);
+	TE_((enum libfonts_subpixel_order_class)~1, R, G, B);
 	TE_(9999, R, G, B);
 
 	T(RGB, 123, R, G, B);

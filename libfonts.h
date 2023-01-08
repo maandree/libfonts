@@ -12,6 +12,12 @@
 #define LIBFONTS_CONTEXT_VERSION 0
 
 
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wpadded"
+#endif
+
+
 /**
  * Style-based default fonts
  */
@@ -1243,12 +1249,6 @@ struct libfonts_rendering_settings {
 	uint32_t reference_height;
 
 	/**
-	 * The output device's physical subpixel order,
-	 * when it is not rotated
-	 */
-	enum libfonts_subpixel_order subpixel_order;
-
-	/**
 	 * If the product of the applicable pixel densities
 	 * (horizontal and vertical) is less than this
 	 * value, the antialiasing mode shall downgrade
@@ -1266,6 +1266,12 @@ struct libfonts_rendering_settings {
 	 * `LIBFONTS_ANTIALIASING_SUBPIXEL`
 	 */
 	double min_dpsqi_for_subpixel;
+
+	/**
+	 * The output device's physical subpixel order,
+	 * when it is not rotated
+	 */
+	enum libfonts_subpixel_order subpixel_order;
 
 	/**
 	 * Antialiasing mode for horizontal (on unrotated output), grey text
@@ -1343,14 +1349,14 @@ struct libfonts_output {
 	int output_screen;
 
 	/**
-	 * Transformation that is applied to the output
-	 */
-	struct libfonts_transformation output_transformation;
-
-	/**
 	 * The output's subpixel order, disregarding applied rotation
 	 */
 	enum libfonts_subpixel_order unrotated_subpixel_order;
+
+	/**
+	 * Transformation that is applied to the output
+	 */
+	struct libfonts_transformation output_transformation;
 
 	/**
 	 * The output's horizontal pixel density (pixels per inch),
@@ -1617,6 +1623,11 @@ struct libfonts_context {
 	 */
 	uid_t uid;
 };
+
+
+#if defined(__clang__)
+# pragma clang diagnostic pop
+#endif
 
 
 /**

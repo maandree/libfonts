@@ -15,6 +15,7 @@
 
 #define DOUBLE_TOLERANCE 0.000001
 
+
 #define LIST_RENDERING_SETTINGS(X, _)\
 	X(0, "dpi-x", dpi_x, 96, libfonts_parse_double__) _\
 	X(1, "dpi-y", dpi_y, 96, libfonts_parse_double__) _\
@@ -43,11 +44,20 @@ transform(double *x_out, double *y_out, double x, double y, const struct libfont
 }
 
 
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wunsuffixed-float-constants"
+#endif
+
 static inline int
 eq(double a, double b)
 {
 	return b - DOUBLE_TOLERANCE <= a && a <= b + DOUBLE_TOLERANCE;
 }
+
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic pop
+#endif
 
 
 const char *libfonts_getenv__(const char *name, struct libfonts_context *ctx);
@@ -66,9 +76,14 @@ int libfonts_parse_aa__(enum libfonts_antialiasing *outp, const char *value);
 # define ASSERT(ASSERTION)\
 	do {\
 		if (!(ASSERTION)) {\
-			fprintf(stderr, "Failed assertion at line %u: %s\n", __LINE__, #ASSERTION);\
+			fprintf(stderr, "Failed assertion at line %i: %s\n", __LINE__, #ASSERTION);\
 			exit(1);\
 		}\
 	} while (0)
+
+
+#if defined(__clang__)
+# pragma clang diagnostic ignored "-Wassign-enum"
+#endif
 
 #endif

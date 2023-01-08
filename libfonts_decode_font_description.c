@@ -123,16 +123,16 @@ fix_charset_subset(char *out, const char *in)
 				saved.last = ranges[i].last;
 		} else {
 			if (saved.first == saved.last)
-				out += sprintf(out, "%"PRId32" ", saved.first);
+				out += sprintf(out, "%"PRIu32" ", saved.first);
 			else
-				out += sprintf(out, "%"PRId32"-%"PRId32" ", saved.first, saved.last);
+				out += sprintf(out, "%"PRIu32"-%"PRIu32" ", saved.first, saved.last);
 			saved = ranges[i];
 		}
 	}
 	if (saved.first == saved.last)
-		out += sprintf(out, "%"PRId32" ", saved.first);
+		out += sprintf(out, "%"PRIu32" ", saved.first);
 	else
-		out += sprintf(out, "%"PRId32"-%"PRId32" ", saved.first, saved.last);
+		out += sprintf(out, "%"PRIu32"-%"PRIu32" ", saved.first, saved.last);
 
 	out[-1] = '\0';
 	return 0;
