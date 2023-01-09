@@ -25,7 +25,7 @@ libfonts_parse_double__(double *outp, const char *value)
 int
 main(void)
 {
-	return 0; /* TODO add test */
+	return 0; /* XXX add test */
 }
 
 

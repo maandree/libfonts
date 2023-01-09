@@ -223,9 +223,9 @@ private:
 
 
 int
-main(void) /* TODO add test */
+main(void)
 {
-	return 0;
+	return 0; /* XXX add test */
 }
 
 

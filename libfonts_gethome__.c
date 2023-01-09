@@ -47,7 +47,7 @@ libfonts_gethome__(struct libfonts_context *ctx)
 int
 main(void)
 {
-	return 0; /* TODO add test */
+	return 0; /* XXX add test */
 }
 
 

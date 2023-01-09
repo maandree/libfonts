@@ -37,7 +37,7 @@ ok:
 int
 main(void)
 {
-	return 0; /* TODO add test */
+	return 0; /* XXX add test */
 }
 
 

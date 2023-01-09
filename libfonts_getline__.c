@@ -58,7 +58,7 @@ libfonts_getline__(int fd, char **linep, char **bufp, size_t *sizep, size_t *off
 int
 main(void)
 {
-	return 0; /* TODO add test */
+	return 0; /* XXX add test */
 }
 
 
