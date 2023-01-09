@@ -6,9 +6,16 @@
 int
 libfonts_parse_double__(double *outp, const char *value)
 {
-	(void) outp;
-	(void) value;
-	return 0; /* TODO implement */
+	char *end;
+	int saved_errno = errno;
+	errno = 0;
+	*outp = strtod(value, &end);
+	if (errno || *end || isblank(*value)) {
+		errno = saved_errno;
+		return 0;
+	}
+	errno = saved_errno;
+	return 1;
 }
 
 

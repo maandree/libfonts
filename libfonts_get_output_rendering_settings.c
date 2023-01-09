@@ -17,6 +17,7 @@ getn(const char *file_part1, size_t file_part1_len, const char *file_part2,
 	int in_the_section = 0;
 	int in_a_section = 0;
 	char *value;
+	char *aliased_to = NULL;
 	unsigned int found_fields = 0;
 	size_t lineno = 0;
 
@@ -64,8 +65,10 @@ open_again:
 		if (len < 0) {
 			if (errno == EINTR)
 				continue;
+		fail:
 			free(buf);
 			free(path);
+			free(aliased_to);
 			close(fd);
 			return -1;
 		}
@@ -89,7 +92,16 @@ open_again:
 			line = &line[1];
 			len -= 2;
 			line[len] = '\0';
-			found |= in_the_section = !strcmp(line, name);
+			in_the_section = !strcmp(line, name);
+			if (aliased_to) {
+				if (in_the_section) {
+					warning(ctx, 0, "libfonts_get_output_rendering_settings",
+					        "[%s] aliased to [%s] but has its own section", name, aliased_to);
+				} else {
+					in_the_section = !strcmp(line, aliased_to);
+				}
+			}
+			found |= in_the_section;
 			found_fields = 0;
 
 		} else if (!in_a_section) {
@@ -98,7 +110,17 @@ open_again:
 				warning(ctx, 0, "libfonts_get_output_rendering_settings", "bad line in %s at line %zu", path, lineno);
 				continue;
 			}
-			/* TODO aliases should be declarable above the first "[%s]" */
+			if (!strcmp(line, name)) {
+				if (aliased_to) {
+					warning(ctx, 0, "libfonts_get_output_rendering_settings",
+					        "new alias for [%s] in %s at line %zu", name, path, lineno);
+					free(aliased_to);
+					aliased_to = NULL;
+				}
+				aliased_to = strdup(value);
+				if (!aliased_to)
+					goto fail;
+			}
 
 		} else if (in_the_section) {
 			value = libfonts_confsplit__(line);
@@ -110,7 +132,7 @@ open_again:
 			if (!strcmp(line, CONFNAME)) {\
 				if (found_fields & (1U << INDEX)) {\
 					warning(ctx, 0, "libfonts_get_output_rendering_settings",\
-					        "duplicate definition in %s at line %zu", path, lineno); \
+					        "duplicate definition in %s at line %zu", path, lineno);\
 				}\
 				found_fields |= (1U << INDEX);\
 				if (!PARSER(&settings->CNAME, value)) {\
@@ -131,6 +153,7 @@ open_again:
 
 out:
 	free(path);
+	free(aliased_to);
 	return found;
 }
 
