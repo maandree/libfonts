@@ -11,7 +11,7 @@ find(char **outp, const char *dir_part1, const char *dir_part2, const char *dir_
 	(void) dir_part2;
 	(void) dir_part3;
 	(void) ctx;
-	return 0; /* TODO */
+	return 0; /* TODO implement find() */
 }
 
 static int
@@ -229,11 +229,7 @@ libfonts_get_default_font(enum libfonts_default_font font, struct libfonts_conte
 	if (r)
 		goto out;
 
-	/* TODO 
-	 * as a last resort look around for some
-	 * font that matches the specification as
-	 * well as possible
-	 */
+	/* TODO as a last resort look around for some font that matches the specification as well as possible */
 
 	ret = NULL;
 	r = 0;
