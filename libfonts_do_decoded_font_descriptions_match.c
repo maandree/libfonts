@@ -35,7 +35,7 @@ equal(const char *desc, const char *spec)
 		return 0;
 
 	for (; desc[i] && spec[i]; i++)
-		if (spec[i] != desc[i] && spec[i] != '?')
+		if (tolower(spec[i]) != tolower(desc[i]) && spec[i] != '?')
 			return 0;
 
 	return desc[i] == spec[i];
@@ -56,7 +56,7 @@ many_equal(const char *desc, const char *spec)
 				desc++;
 		} else {
 			while (*spec && *desc && *spec != '-' && *desc != '-') {
-				if (*spec != *desc && *spec != '?')
+				if (tolower(*spec) != tolower(*desc) && *spec != '?')
 					return 0;
 			}
 		}
