@@ -6,27 +6,25 @@
 int
 libfonts_do_font_descriptions_match(const char *desc, const char *spec)
 {
+	struct libfonts_font_description desc_decoded;
+	struct libfonts_font_description spec_decoded;
+
 	if (!spec)
 		return !desc;
 	if (!desc)
 		return 0;
 
-	while (*spec && *desc) {
-		if (spec[0] == '*' && (!spec[1] || spec[1] == '-')) {
-			spec++;
-			while (*desc && *desc != '-')
-				desc++;
-		} else {
-			while (*spec && *desc && *spec != '-' && *desc != '-') {
-				if (*spec != *desc && *spec != '?')
-					return 0;
-			}
-		}
-		if (*spec != *desc || (*spec && *spec != '-'))
-			return 0;
+	if (strlen(desc) > 255 || strlen(spec) > 255) {
+	fallback:
+		desc_decoded.private_font_name = desc;
+		spec_decoded.private_font_name = spec;
+	} else {
+		if (libfonts_decode_font_description(&desc_decoded, desc) ||
+		    libfonts_decode_font_description(&spec_decoded, spec))
+			goto fallback;
 	}
 
-	return *spec == *desc;
+	return libfonts_do_decoded_font_descriptions_match(&desc_decoded, &spec_decoded);
 }
 
 

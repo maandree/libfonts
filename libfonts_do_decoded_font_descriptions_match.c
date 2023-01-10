@@ -41,12 +41,38 @@ equal(const char *desc, const char *spec)
 	return desc[i] == spec[i];
 }
 
+static int
+many_equal(const char *desc, const char *spec)
+{
+	if (!spec)
+		return !desc;
+	if (!desc)
+		return 0;
+
+	while (*spec && *desc) {
+		if (spec[0] == '*' && (!spec[1] || spec[1] == '-')) {
+			spec++;
+			while (*desc && *desc != '-')
+				desc++;
+		} else {
+			while (*spec && *desc && *spec != '-' && *desc != '-') {
+				if (*spec != *desc && *spec != '?')
+					return 0;
+			}
+		}
+		if (*spec != *desc || (*spec && *spec != '-'))
+			return 0;
+	}
+
+	return *spec == *desc;
+}
+
 int
 libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_description *desc,
                                             const struct libfonts_font_description *spec)
 {
 	if (desc->private_font_name || spec->private_font_name)
-		return libfonts_do_font_descriptions_match(desc->private_font_name, spec->private_font_name);
+		return many_equal(desc->private_font_name, spec->private_font_name);
 
 #define X(F)\
 	if (!equal(desc->F, spec->F))\
@@ -54,7 +80,7 @@ libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descripti
 	LIST_ALL_FIELDS(X, ;);
 #undef X
 
-	return libfonts_do_font_descriptions_match(desc->unrecognised_fields, spec->unrecognised_fields);
+	return many_equal(desc->unrecognised_fields, spec->unrecognised_fields);
 }
 
 
