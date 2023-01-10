@@ -3,20 +3,20 @@
 #ifndef TEST
 
 
-#define LIST_FIELDS(X)\
-	X(foundry)\
-	X(family_name)\
-	X(weight_name)\
-	X(slant)\
-	X(setwidth_name)\
-	X(add_style_name)\
-	X(pixel_size)\
-	X(point_size)\
-	X(resolution_x)\
-	X(resolution_y)\
-	X(spacing)\
-	X(average_width)\
-	X(charset_registry)\
+#define LIST_FIELDS(X, _)\
+	X(foundry) _\
+	X(family_name) _\
+	X(weight_name) _\
+	X(slant) _\
+	X(setwidth_name) _\
+	X(add_style_name) _\
+	X(pixel_size) _\
+	X(point_size) _\
+	X(resolution_x) _\
+	X(resolution_y) _\
+	X(spacing) _\
+	X(average_width) _\
+	X(charset_registry) _\
 	X(charset_encoding)
 
 
@@ -61,8 +61,8 @@ libfonts_encode_font_description(const struct libfonts_font_description *desc, c
 #define X(F)\
 	if (!desc->F)\
 		goto einval;\
-	n += strlen(desc->F) + 1;
-	LIST_FIELDS(X)
+	n += strlen(desc->F) + 1
+	LIST_FIELDS(X, ;);
 #undef X
 
 	if (desc->charset_subset)
@@ -82,8 +82,8 @@ libfonts_encode_font_description(const struct libfonts_font_description *desc, c
 
 #define X(F)\
 	*p++ = '-';\
-	p = encode(p, desc->F);
-	LIST_FIELDS(X)
+	p = encode(p, desc->F)
+	LIST_FIELDS(X, ;);
 #undef X
 
 	if (desc->charset_subset) {

@@ -1737,7 +1737,6 @@ int libfonts_decode_font_description(struct libfonts_font_description *, const c
  * @return        1 if the arguments match, 0 if they don't match
  */
 int libfonts_do_font_descriptions_match(const char *, const char *);
-/* TODO implement libfonts_do_font_descriptions_match */
 
 /**
  * Check if an X Logical Font Description (XLFD) matches
@@ -1749,7 +1748,6 @@ int libfonts_do_font_descriptions_match(const char *, const char *);
  */
 int libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_description *,
                                                 const struct libfonts_font_description *);
-/* TODO implement libfonts_do_decoded_font_descriptions_match */
 
 
 /**

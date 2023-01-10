@@ -19,6 +19,8 @@ LIB_NAME = fonts
 PUBLIC_OBJ =\
 	libfonts_calculate_subpixel_order.o\
 	libfonts_decode_font_description.o\
+	libfonts_do_decoded_font_descriptions_match.o\
+	libfonts_do_font_descriptions_match.o\
 	libfonts_encode_font_description.o\
 	libfonts_get_default_font.o\
 	libfonts_get_default_font_name.o\
