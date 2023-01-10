@@ -7,6 +7,7 @@ const char *const libfonts_used_environs[] = {
 	"LIBFONTS_DEFAULT_SANS_SERIF",
 	"LIBFONTS_DEFAULT_SERIF",
 	"LIBFONTS_DEFAULT_MONOSPACE",
+	"LIBFONTS_FONT_DIRS",
 	"XDG_CONFIG_HOME",
 	"HOME",
 	NULL

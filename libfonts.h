@@ -1660,6 +1660,26 @@ extern const char *const libfonts_used_environs[];
 
 
 /**
+ * Get a list of all font root directories, for example
+ * /usr/share/fonts and /usr/local/share/fonts, but not
+ * their subdirectories
+ * 
+ * @param   dirsp   Output parameter for the directory list;
+ *                  note that directories are not necessarily unique
+ *                  (however no two returned strings will be identical)
+ *                  nor do they necessarily exist
+ * @param   countp  Output parameter for the number of listed directories
+ * @param   ctx     Optional `struct libfonts_context`
+ * @return          0 on success, -1 on failure
+ * 
+ * Unless `*dirsp == NULL` (only happens on failure), `(*dirsp)[*dirsp] == NULL`
+ */
+int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
+
+/* TODO add font listing */
+
+
+/**
  * Get the font a default font name aliases to
  * 
  * @param   font  The default font
