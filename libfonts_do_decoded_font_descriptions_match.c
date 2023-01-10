@@ -31,8 +31,6 @@ equal(const char *desc, const char *spec)
 		return !desc;
 	if (spec[0] == '*' && !spec[1])
 		return 1;
-	if (desc[0] == '0' && !desc[1])
-		return 1;
 	if (!desc)
 		return 0;
 
