@@ -19,7 +19,7 @@
 	X(average_width) _\
 	X(charset_registry) _\
 	X(charset_encoding) _\
-	X(charset_subset)
+	X(charset_subset) /* TODO desc shall match spec if spec is a subset of desc */
 
 
 static int
