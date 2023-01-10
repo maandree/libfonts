@@ -4,22 +4,22 @@
 
 
 #define LIST_ALL_FIELDS(X, _)\
-	X(xlfd_version) _\
-	X(foundry) _\
-	X(family_name) _\
-	X(weight_name) _\
-	X(slant) _\
-	X(setwidth_name) _\
-	X(add_style_name) _\
-	X(pixel_size) _\
-	X(point_size) _\
-	X(resolution_x) _\
-	X(resolution_y) _\
-	X(spacing) _\
-	X(average_width) _\
-	X(charset_registry) _\
-	X(charset_encoding) _\
-	X(charset_subset) /* TODO desc shall match spec if spec is a subset of desc */
+	X(xlfd_version, equal) _\
+	X(foundry, equal) _\
+	X(family_name, equal) _\
+	X(weight_name, equal) _\
+	X(slant, equal) _\
+	X(setwidth_name, equal) _\
+	X(add_style_name, equal) _\
+	X(pixel_size, zero_or_equal) _\
+	X(point_size, zero_or_equal) _\
+	X(resolution_x, zero_or_equal) _\
+	X(resolution_y, zero_or_equal) _\
+	X(spacing, equal) _\
+	X(average_width, equal) _\
+	X(charset_registry, equal) _\
+	X(charset_encoding, equal) _\
+	X(charset_subset, equal) /* TODO desc shall match spec if spec is a subset of desc */
 
 
 static int
@@ -31,6 +31,8 @@ equal(const char *desc, const char *spec)
 		return !desc;
 	if (spec[0] == '*' && !spec[1])
 		return 1;
+	if (desc[0] == '0' && !desc[1])
+		return 1;
 	if (!desc)
 		return 0;
 
@@ -39,6 +41,15 @@ equal(const char *desc, const char *spec)
 			return 0;
 
 	return desc[i] == spec[i];
+}
+
+static int
+zero_or_equal(const char *desc, const char *spec)
+{
+	if (desc && desc[0] == '0' && !desc[1])
+		return 1;
+	else
+		return equal(desc, spec);
 }
 
 static int
@@ -74,8 +85,8 @@ libfonts_do_decoded_font_descriptions_match(const struct libfonts_font_descripti
 	if (desc->private_font_name || spec->private_font_name)
 		return many_equal(desc->private_font_name, spec->private_font_name);
 
-#define X(F)\
-	if (!equal(desc->F, spec->F))\
+#define X(FIELD, FUNC)\
+	if (!FUNC(desc->FIELD, spec->FIELD))\
 		return 0
 	LIST_ALL_FIELDS(X, ;);
 #undef X
