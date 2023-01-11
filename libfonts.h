@@ -12,6 +12,12 @@
  */
 #define LIBFONTS_CONTEXT_VERSION 0
 
+/**
+ * File name of file in font directories that is used
+ * to create font aliases
+ */
+#define LIBFONTS_ALIAS_FILE_NAME "fonts.alias"
+
 
 #if defined(__clang__)
 # pragma clang diagnostic push
@@ -1675,6 +1681,32 @@ extern const char *const libfonts_used_environs[];
  * Unless `*dirsp == NULL` (only happens on failure), `(*dirsp)[*dirsp] == NULL`
  */
 int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
+
+/**
+ * Parse line from a font alias file
+ * 
+ * Font alias files are named "fonts.alias" (`LIBFONTS_ALIAS_FILE_NAME`)
+ * and are located in any font directory, i.e. directories returned by
+ * `libfonts_get_font_root_dirs` subdirectors (and further decedents)
+ * 
+ * @param   aliasp  Output parameter for the new alias
+ * @param   namep   Output parameter for the alias target,
+ *                  which can be ether a proper font name or an alias
+ * @param   line    The line to parse; parsing stops at the first
+ *                  newline or NUL byte
+ * @param   endp    Output parameter for the parsing end, i.e. the
+ *                  first newline or NUL byte in `line`
+ * @return          1 if the line included a font alias,
+ *                  0 if the line was blank or a comment line,
+ *                  -1 on failure
+ * 
+ * @throws  ENOMEM   Failed to allocate memory for `*aliasp` or `*namep`
+ * @throws  EBADMSG  The line is malformatted
+ * 
+ * `*aliasp` and `*namep` are set to `NULL` unless the function
+ * returns 1; `*endp` is updated even on failure
+ */
+int libfonts_parse_alias_line(char **, char **, const char *, char **);
 
 /* TODO add font listing */
 
