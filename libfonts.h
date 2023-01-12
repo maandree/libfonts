@@ -18,6 +18,23 @@
  */
 #define LIBFONTS_ALIAS_FILE_NAME "fonts.alias"
 
+/**
+ * File name of file in font directories that is used
+ * enumerate all font files, and their font names, in
+ * in the directory
+ */
+#define LIBFONTS_DIR_FILE_NAME "fonts.dir"
+
+/**
+ * File name of file in font directories that is used
+ * enumerate all scalable font files, and their font
+ * names, in in the directory
+ * 
+ * `LIBFONTS_SCALE_DIR_FILE_NAME` enumerates a subset
+ * of `LIBFONTS_DIR_FILE_NAME`
+ */
+#define LIBFONTS_SCALE_DIR_FILE_NAME "fonts.scale"
+
 
 #if defined(__clang__)
 # pragma clang diagnostic push
@@ -1740,8 +1757,8 @@ int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
  * @param   typep   Output parameter fot the line's type
  * @param   aliasp  Output parameter for the new alias
  * @param   namep   Output parameter for the alias target,
- *                  which can be ether a proper XFDL (font name),
- *                  a XFDL with wildcards, or another alias
+ *                  which can be ether a proper XLFD (font name),
+ *                  a XLFD with wildcards, or another alias
  * @param   line    The line to parse; parsing stops at the first
  *                  newline or NUL byte
  * @param   endp    Output parameter for the parsing end, i.e. the
@@ -1749,13 +1766,49 @@ int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
  * @return          0 on success, -1 on failure
  * 
  * @throws  ENOMEM   Failed to allocate memory for `*aliasp` or `*namep`
+ * @throws  EINVAL   `line` is `NULL`
  * 
  * Unless `*typep` is set to (or would be set to) `LIBFONTS_ALIAS_LINE_ALIAS_DEFINITION`,
  * `*aliasp` and `*namep` are set to `NULL`. On failure, `*aliasp` and `*namep` are set
- * to `NULL` and `*typep` is seto to `LIBFONTS_ALIAS_LINE_BLANK`. `*endp` is updated even
+ * to `NULL` and `*typep` is set to `LIBFONTS_ALIAS_LINE_BLANK`. `*endp` is updated even
  * on failure.
  */
 int libfonts_parse_alias_line(enum libfonts_alias_line_type *, char **, char **, const char *, char **);
+
+/**
+ * Parse any other than the first line in a
+ * font enumeration file
+ * 
+ * Font enumeration files are named either "fonts.dir"
+ * (`LIBFONTS_DIR_FILE_NAME`; for full enumeration) or
+ * "fonts.scale" (`LIBFONTS_SCALE_DIR_FILE_NAME`, for
+ * enumeration of scalable fonts only), and are located
+ * in any font directory, i.e. directories returned by
+ * `libfonts_get_font_root_dirs` subdirectors (and
+ * further decedents)
+ * 
+ * The first line the file is a decimally formatted
+ * non-negative number of entries in the file, and
+ * should be ignored; and it cannot be parsed by this
+ * function
+ * 
+ * @param   filep  Output parameter for the font file name (basename with suffix)
+ * @param   namep  Output parameter for the font's XLFD
+ * @param   line   The line to parse; parsing stops at the first
+ *                 newline or NUL byte
+ * @param   endp   Output parameter for the parsing end, i.e. the
+ *                 first newline or NUL byte in `line`
+ * @return         0 on success, -1 on failure
+ * 
+ * @throws  ENOMEM        Failed to allocate memory for `*aliasp` or `*namep`
+ * @throws  EINVAL        `line` is `NULL`
+ * @throws  (unmodified)  Malformatted line (possibly the first line in the file)
+ * @throws  (unmodified)  Listed font file name contains a slash
+ *
+ * On failure, `*filep` and `*namep` are set to `NULL`.
+ * `*endp` is updated even on failure.
+ */
+int libfonts_parse_dir_line(char **, char **, const char *, char **);
 
 /* TODO add font listing */
 

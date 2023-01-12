@@ -86,6 +86,11 @@ libfonts_parse_alias_line(enum libfonts_alias_line_type *typep, char **aliasp, c
 	if (namep)
 		*namep = NULL;
 
+	if (!line) {
+		errno = EINVAL;
+		goto fail;
+	}
+
 	while (isblank(*line))
 		line++;
 	if (!*line)
@@ -132,8 +137,9 @@ fail:
 		*namep = NULL;
 	}
 	ret = -1;
-	while (*line && *line != '\n')
-		line++;
+	if (line)
+		while (*line && *line != '\n')
+			line++;
 out:
 	if (endp)
 		*endp = *(char **)(void *)&line;
