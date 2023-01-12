@@ -72,18 +72,24 @@ enum libfonts_alias_line_type {
 	LIBFONTS_ALIAS_LINE_ALIAS_DEFINITION,
 
 	/**
-	 * Line containing just the string ”FILE_NAMES_ALIASES”
+	 * Line containing just the string “FILE_NAMES_ALIASES”
 	 * indicating that the file name, minus its suffix, of
 	 * each font file, in the same directory as the font alias
 	 * file, should be set as an alias for the font contained
 	 * in that file
-	 *
+	 * 
 	 * For example, if the director contains the files
-	 * "My Font.ttf" and "My Font Bold.ttf", the font names
-	 * "My Font" and "My Font Bold" should be aliases for the
+	 * “My Font.ttf” and “My Font Bold.ttf”, the font names
+	 * “My Font” and “My Font Bold” should be aliases for the
 	 * two fonts, whose proper names are determined by their
-	 * content and ought to be listed in the file "fonts.dir"
-	 * in the same directory
+	 * content and ought to be listed in the file “fonts.dir”
+	 * in the same directory. Note fonts may be compressed
+	 * with e.g. gzip, and therefor have an extra suffix
+	 * (e.g. .gz), in such cases both the compression suffix
+	 * and the font file type suffix shall be stripped, e.g.
+	 * “My Font 16.pcf.gz” becomes “My Font 16”. You should
+	 * however not assume that the suffixless basename does
+	 * not contain any dot.
 	 */
 	LIBFONTS_ALIAS_LINE_FONT_NAMES_ALIASES
 };
