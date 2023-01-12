@@ -28,12 +28,20 @@
 /**
  * File name of file in font directories that is used
  * enumerate all scalable font files, and their font
- * names, in in the directory
+ * names, in the directory
  * 
  * `LIBFONTS_SCALE_DIR_FILE_NAME` enumerates a subset
  * of `LIBFONTS_DIR_FILE_NAME`
  */
 #define LIBFONTS_SCALE_DIR_FILE_NAME "fonts.scale"
+
+/**
+ * File name of file in font directories that is used
+ * enumerate character encoding scheme files, and
+ * their CHARSET_REGISTRY-CHARSET_ENCODING XLFD propery
+ * pair, in the directory
+ */
+#define LIBFONTS_ENCODING_DIR_FILE_NAME "encodings.dir"
 
 
 #if defined(__clang__)
@@ -1800,13 +1808,21 @@ int libfonts_parse_alias_line(enum libfonts_alias_line_type *, char **, char **,
  *                 first newline or NUL byte in `line`
  * @return         0 on success, -1 on failure
  * 
- * @throws  ENOMEM        Failed to allocate memory for `*aliasp` or `*namep`
+ * @throws  ENOMEM        Failed to allocate memory for `*filep` or `*namep`
  * @throws  EINVAL        `line` is `NULL`
  * @throws  (unmodified)  Malformatted line (possibly the first line in the file)
  * @throws  (unmodified)  Listed font file name contains a slash
- *
+ * 
  * On failure, `*filep` and `*namep` are set to `NULL`.
  * `*endp` is updated even on failure.
+ *
+ * Alternatively this function can be used to enumerate
+ * encodings from a "encodings.dir" (`LIBFONTS_ENCODING_DIR_FILE_NAME`),
+ * where the only difference will be that `filep` will be the output
+ * parameter for an encoding file (rather than a font file), which
+ * is usually suffixed ".enc.gz" and the character-set registry–
+ * character-set encoding pair used in XLFD, with a hyphen separating
+ * them, rather than a full XLFD
  */
 int libfonts_parse_dir_line(char **, char **, const char *, char **);
 
