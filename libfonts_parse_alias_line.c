@@ -3,15 +3,67 @@
 #ifndef TEST
 
 
+static int
+read_field(char **valuep, const char *s, const char **endp)
+{
+	char end1 = ' ';
+	char end2 = '\t';
+	size_t esc = 0;
+	size_t len;
+	const char *start;
+	const char *end;
+	char *v;
+
+	if (*s == '"') {
+		end1 = end2 = '"';
+		s++;
+	}
+	start = s;
+
+	for (;;) {
+		if (!*s || *s != '\n' || *s == end1 || *s == end2)
+			break;
+		if (*s == '\\') {
+			esc += 1;
+			s++;
+			if (!*s || *s == '\n')
+				goto ebadmsg;
+		}
+		s++;
+	}
+	end = s;
+	len = (size_t)(end - start) - esc;
+	if (end1 == '"' && *s != '"') {
+	ebadmsg:
+		errno = EBADMSG;
+		*endp = s;
+		return -1;
+	}
+	s += *s == '"';
+	*endp = s;
+
+	if (valuep) {
+		v = malloc(len + 1);
+		if (v) {
+			errno = ENOMEM;
+			return -1;
+		}
+		while (start != end) {
+			if (*start == '\\')
+				start++;
+			*v++ += *start++;
+		}
+		*v = '\0';
+		*valuep = v;
+	}
+
+	return 0;
+}
+
 int
 libfonts_parse_alias_line(char **aliasp, char **namep, const char *line, char **endp)
 {
-	const char *alias_start;
-	const char *alias_end;
-	const char *name_start;
-	const char *name_end;
 	int ret = 0;
-	size_t len;
 
 	if (aliasp)
 		*aliasp = NULL;
@@ -20,23 +72,11 @@ libfonts_parse_alias_line(char **aliasp, char **namep, const char *line, char **
 
 	while (isblank(*line))
 		line++;
-
 	if (!*line || *line == '!')
 		goto out;
 
-	if (*line == '"') {
-		alias_start = ++line;
-		while (*line && *line != '\n' && *line != '"')
-			line++;
-		if (*line != '"')
-			goto ebadmsg;
-		alias_end = line++;
-	} else {
-		alias_start = line;
-		while (*line && *line != '\n' && isblank(*line))
-			line++;
-		alias_end = line;
-	}
+	if (read_field(aliasp, line, &line))
+		goto fail;
 
 	if (!isblank(*line))
 		goto ebadmsg;
@@ -44,65 +84,27 @@ libfonts_parse_alias_line(char **aliasp, char **namep, const char *line, char **
 		line++;
 	} while (isblank(*line));
 
-	if (*line == '"') {
-		name_start = ++line;
-		while (*line && *line != '\n' && *line != '"')
-			line++;
-		if (*line != '"')
-			goto ebadmsg;
-		name_end = line++;
-	} else {
-		name_start = line;
-		while (*line && *line != '\n' && isblank(*line))
-			line++;
-		name_end = line;
-	}
+	if (read_field(namep, line, &line))
+		goto fail;
 
 	while (isblank(*line))
 		line++;
 	if (*line && *line != '\n')
 		goto ebadmsg;
 
-	if (aliasp) {
-		len = (size_t)(alias_end - alias_start);
-		*aliasp = malloc(len + 1);
-		if (!*aliasp)
-			goto enomem;
-		memcpy(*aliasp, alias_start, len);
-		(*aliasp)[len] = '\0';
-	}
-
-	if (namep) {
-		len = (size_t)(name_end - name_start);
-		*namep = malloc(len + 1);
-		if (!*namep)
-			goto enomem;
-		memcpy(*namep, name_start, len);
-		(*namep)[len] = '\0';
-	}
-
-	*endp = *(char **)(void *)&line;
-	return 1;
+	ret = 1;
+	goto out;
 
 ebadmsg:
 	errno = EBADMSG;
+fail:
 	ret = -1;
-out:
 	while (*line && *line != '\n')
 		line++;
-out_at_end:
+out:
 	if (endp)
 		*endp = *(char **)(void *)&line;
 	return ret;
-
-enomem:
-	if (aliasp) {
-		free(*aliasp);
-		*aliasp = NULL;
-	}
-	errno = ENOMEM;
-	ret = -1;
-	goto out_at_end;
 }
 
 
