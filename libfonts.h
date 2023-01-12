@@ -48,6 +48,48 @@ enum libfonts_default_font {
 
 
 /**
+ * Alias font list file type
+ */
+enum libfonts_alias_line_type {
+	/**
+	 * Improperly formatted line
+	 */
+	LIBFONTS_ALIAS_LINE_MALFORMATTED,
+
+	/**
+	 * Empty or white-space only line
+	 */
+	LIBFONTS_ALIAS_LINE_BLANK,
+
+	/**
+	 * Comment line
+	 */
+	LIBFONTS_ALIAS_LINE_COMMENT,
+
+	/**
+	 * Alias definition line
+	 */
+	LIBFONTS_ALIAS_LINE_ALIAS_DEFINITION,
+
+	/**
+	 * Line containing just the string ”FILE_NAMES_ALIASES”
+	 * indicating that the file name, minus its suffix, of
+	 * each font file, in the same directory as the font alias
+	 * file, should be set as an alias for the font contained
+	 * in that file
+	 *
+	 * For example, if the director contains the files
+	 * "My Font.ttf" and "My Font Bold.ttf", the font names
+	 * "My Font" and "My Font Bold" should be aliases for the
+	 * two fonts, whose proper names are determined by their
+	 * content and ought to be listed in the file "fonts.dir"
+	 * in the same directory
+	 */
+	LIBFONTS_ALIAS_LINE_FONT_NAMES_ALIASES
+};
+
+
+/**
  * Antialiasing algorithm
  */
 enum libfonts_antialiasing {
@@ -1689,6 +1731,7 @@ int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
  * and are located in any font directory, i.e. directories returned by
  * `libfonts_get_font_root_dirs` subdirectors (and further decedents)
  * 
+ * @param   typep   Output parameter fot the line's type
  * @param   aliasp  Output parameter for the new alias
  * @param   namep   Output parameter for the alias target,
  *                  which can be ether a proper XFDL (font name),
@@ -1697,17 +1740,16 @@ int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
  *                  newline or NUL byte
  * @param   endp    Output parameter for the parsing end, i.e. the
  *                  first newline or NUL byte in `line`
- * @return          1 if the line included a font alias,
- *                  0 if the line was blank or a comment line,
- *                  -1 on failure
+ * @return          0 on success, -1 on failure
  * 
  * @throws  ENOMEM   Failed to allocate memory for `*aliasp` or `*namep`
- * @throws  EBADMSG  The line is malformatted
  * 
- * `*aliasp` and `*namep` are set to `NULL` unless the function
- * returns 1; `*endp` is updated even on failure
+ * Unless `*typep` is set to (or would be set to) `LIBFONTS_ALIAS_LINE_ALIAS_DEFINITION`,
+ * `*aliasp` and `*namep` are set to `NULL`. On failure, `*aliasp` and `*namep` are set
+ * to `NULL` and `*typep` is seto to `LIBFONTS_ALIAS_LINE_BLANK`. `*endp` is updated even
+ * on failure.
  */
-int libfonts_parse_alias_line(char **, char **, const char *, char **);
+int libfonts_parse_alias_line(enum libfonts_alias_line_type *, char **, char **, const char *, char **);
 
 /* TODO add font listing */
 

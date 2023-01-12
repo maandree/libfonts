@@ -4,7 +4,7 @@
 
 
 static int
-read_field(char **valuep, const char *s, const char **endp)
+read_field(enum libfonts_alias_line_type *typep, char **valuep, const char *s, const char **endp)
 {
 	char end1 = ' ';
 	char end2 = '\t';
@@ -27,15 +27,15 @@ read_field(char **valuep, const char *s, const char **endp)
 			esc += 1;
 			s++;
 			if (!*s || *s == '\n')
-				goto ebadmsg;
+				goto badline;
 		}
 		s++;
 	}
 	end = s;
 	len = (size_t)(end - start) - esc;
 	if (end1 == '"' && *s != '"') {
-	ebadmsg:
-		errno = EBADMSG;
+	badline:
+		*typep = LIBFONTS_ALIAS_LINE_MALFORMATTED;
 		*endp = s;
 		return -1;
 	}
@@ -60,9 +60,25 @@ read_field(char **valuep, const char *s, const char **endp)
 	return 0;
 }
 
-int
-libfonts_parse_alias_line(char **aliasp, char **namep, const char *line, char **endp)
+static int
+is_file_names_aliases(const char *line, const char **endp)
 {
+	if (strncmp(line, "FILE_NAMES_ALIASES", sizeof("FILE_NAMES_ALIASES") - 1))
+		return 0;
+	line = &line[sizeof("FILE_NAMES_ALIASES") - 1];
+	while (isblank(*line))
+		line++;
+	if (!*line || *line == '\n') {
+		*endp = line;
+		return 1;
+	}
+	return 0;
+}
+
+int
+libfonts_parse_alias_line(enum libfonts_alias_line_type *typep, char **aliasp, char **namep, const char *line, char **endp)
+{
+	enum libfonts_alias_line_type type = LIBFONTS_ALIAS_LINE_BLANK;
 	int ret = 0;
 
 	if (aliasp)
@@ -72,38 +88,57 @@ libfonts_parse_alias_line(char **aliasp, char **namep, const char *line, char **
 
 	while (isblank(*line))
 		line++;
-	if (!*line || *line == '!')
+	if (!*line)
 		goto out;
+	if (*line == '!') {
+		type = LIBFONTS_ALIAS_LINE_COMMENT;
+		goto out;
+	}
 
-	if (read_field(aliasp, line, &line))
+	if (is_file_names_aliases(line, &line)) {
+		type = LIBFONTS_ALIAS_LINE_FONT_NAMES_ALIASES;
+		goto out;
+	}
+
+	if (read_field(&type, aliasp, line, &line))
 		goto fail;
 
 	if (!isblank(*line))
-		goto ebadmsg;
+		goto badline;
 	do {
 		line++;
 	} while (isblank(*line));
 
-	if (read_field(namep, line, &line))
+	if (read_field(&type, namep, line, &line))
 		goto fail;
 
+	type = LIBFONTS_ALIAS_LINE_ALIAS_DEFINITION;
 	while (isblank(*line))
 		line++;
 	if (*line && *line != '\n')
-		goto ebadmsg;
+		goto badline;
 
-	ret = 1;
 	goto out;
 
-ebadmsg:
-	errno = EBADMSG;
+badline:
+	type = LIBFONTS_ALIAS_LINE_MALFORMATTED;
 fail:
+	if (aliasp) {
+		free(*aliasp);
+		*aliasp = NULL;
+	}
+	if (namep) {
+		free(*namep);
+		*namep = NULL;
+	}
 	ret = -1;
 	while (*line && *line != '\n')
 		line++;
 out:
 	if (endp)
 		*endp = *(char **)(void *)&line;
+	if (typep)
+		*typep = type;
 	return ret;
 }
 
