@@ -4,22 +4,25 @@
 
 
 static int
-read_field(char **valuep, int allow_blank, const char *s, const char **endp)
+read_field(char **valuep, int fieldno, const char *s, const char **endp)
 {
-	char endc;
+	char endc, slash;
 	size_t esc = 0;
 	size_t len;
 	const char *start;
 	const char *end;
 	char *v;
 
+	if (fieldno == 0) {
+		endc = ' ';
+		slash = '/';
+	} else {
+		endc = '\n';
+		slash = '\0';
+	}
 	if (*s == '"') {
 		endc = '"';
 		s++;
-	} else if (allow_blank) {
-		endc = '\n';
-	} else {
-		endc = ' ';
 	}
 	start = s;
 
@@ -32,6 +35,8 @@ read_field(char **valuep, int allow_blank, const char *s, const char **endp)
 			if (!*s || *s == '\n')
 				goto badline;
 		}
+		if (*s == slash)
+			goto badline;
 		s++;
 	}
 	end = s;
