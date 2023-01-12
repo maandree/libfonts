@@ -1691,7 +1691,8 @@ int libfonts_get_font_root_dirs(char ***, size_t *, struct libfonts_context *);
  * 
  * @param   aliasp  Output parameter for the new alias
  * @param   namep   Output parameter for the alias target,
- *                  which can be ether a proper font name or an alias
+ *                  which can be ether a proper XFDL (font name),
+ *                  a XFDL with wildcards, or another alias
  * @param   line    The line to parse; parsing stops at the first
  *                  newline or NUL byte
  * @param   endp    Output parameter for the parsing end, i.e. the
