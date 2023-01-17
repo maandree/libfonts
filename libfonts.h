@@ -1826,6 +1826,23 @@ int libfonts_parse_alias_line(enum libfonts_alias_line_type *, char **, char **,
  */
 int libfonts_parse_dir_line(char **, char **, const char *, char **);
 
+/**
+ * Sets if a specific character is in a subset of
+ * of character set
+ * 
+ * @param   c       The character to test; it is assumed that
+ *                  it is a member of the complete character set
+ * @param   subset  The subset (of the complete character set)
+ *                  to test against; shall be formatted as
+ *                  `struct libfonts_font_description.charset_subset`
+ * @return          1 if the character is a member of the subset,
+ *                  or `subset` is `NULL`, 0 otherwise; -1 on failure
+ * 
+ * @throws  EINVAL  If `c` is equal to greater than 0x80000000
+ * @throws  EINVAL  If `subset` is invalid
+ */
+int libfonts_char_is_in_subset(uint32_t, const char *);
+
 /* TODO add font listing */
 
 
