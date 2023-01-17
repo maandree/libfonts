@@ -19,8 +19,73 @@
 	X(average_width, equal) _\
 	X(charset_registry, equal) _\
 	X(charset_encoding, equal) _\
-	X(charset_subset, equal) /* TODO desc shall match spec if spec is a subset of desc */
+	X(charset_subset, super)
 
+
+static const char *
+read_uint32(uint32_t *restrict nump, const char *s)
+{
+	uint32_t r;
+	for (r = 0; isdigit(*s); s++)
+		r = r * 10 + (uint32_t)(*s & 15);
+	*nump = r;
+	return s;
+}
+
+static int
+super(const char *desc, const char *spec)
+{
+	uint32_t dl = 0, dh = 0, sl = 0, sh = 0;
+	int have_d = 0, have_s = 0;
+
+	if (!spec || !desc)
+		return 1;
+
+	while (*desc && *spec) {
+		if (!have_d) {
+			have_d = 1;
+			if (!isdigit(*desc))
+				return 0;
+			desc = read_uint32(&dl, desc);
+			if (desc[0] == '-' && isdigit(desc[1]))
+				desc = read_uint32(&dh, desc);
+			else
+				dh = dl;
+			if (*desc) {
+				if (*desc != ' ')
+					return 0;
+				desc++;
+			}
+		}
+
+		if (!have_s) {
+			have_s = 1;
+			if (!isdigit(*spec))
+				return 0;
+			spec = read_uint32(&sl, spec);
+			if (spec[0] == '-' && isdigit(spec[1]))
+				spec = read_uint32(&sh, spec);
+			else
+				sh = sl;
+			if (*spec) {
+				if (*spec != ' ')
+					return 0;
+				spec++;
+			}
+		}
+
+		if (sl < dl)
+			return 0;
+		else if (sl > dh)
+			have_d = 0;
+		else if (sh > dh)
+			return 0;
+		else
+			have_s = 0;
+	}
+
+	return !*spec;
+}
 
 static int
 equal(const char *desc, const char *spec)

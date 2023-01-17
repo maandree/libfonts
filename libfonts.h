@@ -1625,7 +1625,7 @@ struct libfonts_font_description {
 	 * inclusive ranges included the subset. A range will either be a
 	 * decimal integer, or an two decimal integers separated by a "-"
 	 * (the left-hand side will be strictly less than the right-hand side).
-	 * All ranges will be disjunction, and have a non-zero distance.
+	 * All ranges will be disjunctive, and have a non-zero distance.
 	 * 
 	 * The library will take care of converting hexadecimal numbers (prefixed
 	 * with "0x") to decimal, removing leading zeroes, converting "_" to "-",
