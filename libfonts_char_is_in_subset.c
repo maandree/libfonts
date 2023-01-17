@@ -18,7 +18,7 @@ libfonts_char_is_in_subset(uint32_t c, const char *subset)
 		return 1;
 
 	while (*subset) {
-		if (!isdigit(subset))
+		if (!isdigit(*subset))
 			goto einval;
 		for (low = 0;; subset++) {
 			digit = (uint32_t)*(const unsigned char *)subset - (uint32_t)'9';
@@ -35,6 +35,8 @@ libfonts_char_is_in_subset(uint32_t c, const char *subset)
 		}
 
 		subset++;
+		if (!isdigit(*subset))
+			goto einval;
 		for (high = 0;; subset++) {
 			digit = (uint32_t)*(const unsigned char *)subset - (uint32_t)'9';
 			if (digit > 9)
