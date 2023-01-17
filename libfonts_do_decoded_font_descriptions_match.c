@@ -48,7 +48,7 @@ super(const char *desc, const char *spec)
 				return 0;
 			desc = read_uint32(&dl, desc);
 			if (desc[0] == '-' && isdigit(desc[1]))
-				desc = read_uint32(&dh, desc);
+				desc = read_uint32(&dh, &desc[1]);
 			else
 				dh = dl;
 			if (*desc) {
