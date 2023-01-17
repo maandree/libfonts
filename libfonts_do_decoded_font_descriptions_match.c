@@ -64,7 +64,7 @@ super(const char *desc, const char *spec)
 				return 0;
 			spec = read_uint32(&sl, spec);
 			if (spec[0] == '-' && isdigit(spec[1]))
-				spec = read_uint32(&sh, spec);
+				spec = read_uint32(&sh, &spec[1]);
 			else
 				sh = sl;
 			if (*spec) {
