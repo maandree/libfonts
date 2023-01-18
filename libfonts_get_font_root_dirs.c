@@ -66,38 +66,67 @@ libfonts_get_font_root_dirs(char ***dirsp, size_t *countp, struct libfonts_conte
 	const char *env;
 	char **new, *home = NULL;
 	size_t size = 0;
+	const char *env_xdg_data_home = libfonts_getenv__("XDG_DATA_HOME", ctx);
+	const char *env_home = libfonts_getenv__("HOME", ctx);
+	const char *env_xdg_data_dirs = libfonts_getenv__("XDG_DATA_DIRS", ctx);
 
 	*dirsp = NULL;
 	*countp = 0;
 
+
 	env = libfonts_getenv__("LIBFONTS_FONT_DIRS", ctx);
-	if (env && *env && add_dirs(dirsp, countp, &size, env, "/fonts"))
+	if (env && *env && add_dirs(dirsp, countp, &size, env, ""))
 		goto fail;
 
-	env = libfonts_getenv__("XDG_DATA_HOME", ctx);
+
+	env = env_xdg_data_home;
+	if (env && *env && add_dir(dirsp, countp, &size, env, "/libfonts"))
+		goto fail;
+
+	env = env_home;
+	if (env && *env && (add_dir(dirsp, countp, &size, env, "/.local/share/libfonts") ||
+	                    add_dir(dirsp, countp, &size, env, "/.libfonts")))
+		goto fail;
+
+	home = libfonts_gethome__(ctx);
+	if (home && *home && (add_dir(dirsp, countp, &size, home, "/.local/share/libfonts") ||
+	                      add_dir(dirsp, countp, &size, home, "/.libfonts")))
+		goto fail;
+
+
+	env = env_xdg_data_dirs;
+	if (env && *env && add_dirs(dirsp, countp, &size, env, "/libfonts"))
+		goto fail;
+
+	if (add_dirs(dirsp, countp, &size, "/usr/local/share", "/libfonts") ||
+	    add_dirs(dirsp, countp, &size, "/usr/share", "/libfonts"))
+		goto fail;
+
+
+	env = env_xdg_data_home;
 	if (env && *env && add_dir(dirsp, countp, &size, env, "/fonts"))
 		goto fail;
 
-	env = libfonts_getenv__("HOME", ctx);
+	env = env_home;
 	if (env && *env && (add_dir(dirsp, countp, &size, env, "/.local/share/fonts") ||
 	                    add_dir(dirsp, countp, &size, env, "/.fonts")))
 		goto fail;
 
-	home = libfonts_gethome__(ctx);
-	if (home && *home && (add_dir(dirsp, countp, &size, env, "/.local/share/fonts") ||
-	                      add_dir(dirsp, countp, &size, env, "/.fonts")))
+	if (home && *home && (add_dir(dirsp, countp, &size, home, "/.local/share/fonts") ||
+	                      add_dir(dirsp, countp, &size, home, "/.fonts")))
 		goto fail;
 	free(home);
 	home = NULL;
 
-	env = libfonts_getenv__("XDG_DATA_DIRS", ctx);
+
+	env = env_xdg_data_dirs;
 	if (env && *env && add_dirs(dirsp, countp, &size, env, "/fonts"))
 		goto fail;
 
-	if (add_dirs(dirsp, countp, &size, "/usr/local/share", "/fonts"))
+	if (add_dirs(dirsp, countp, &size, "/usr/local/share", "/fonts") ||
+	    add_dirs(dirsp, countp, &size, "/usr/share", "/fonts"))
 		goto fail;
-	if (add_dirs(dirsp, countp, &size, "/usr/share", "/fonts"))
-		goto fail;
+
 
 	if (*countp == size) {
 		if (SIZE_MAX / sizeof(**dirsp) - 1)
