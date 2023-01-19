@@ -1663,6 +1663,245 @@ struct libfonts_font_description {
 	char _buf[256];
 };
 
+
+/**
+ * Text encoding translation mapping entry type
+ */
+enum libfonts_encoding_mapping_entry_type {
+	/**
+	 * Text encoding translation mapping entry that declares
+	 * a contiguous character range as invalid (unless
+	 * mapped later on)
+	 */
+	LIBFONTS_ENCODING_MAPPING_ENTRY_UNDEFINED_RANGE,
+
+	/**
+	 * Text encoding translation mapping entry that declares
+	 * how a contiguous range of characters index are mapped
+	 * into the target encoding
+	 */
+	LIBFONTS_ENCODING_MAPPING_ENTRY_REMAPPED_RANGE,
+
+	/**
+	 * Text encoding translation mapping entry that declares
+	 * which name, in the target encoding, a character in the
+	 * source encoding has
+	 */
+	LIBFONTS_ENCODING_MAPPING_ENTRY_INDEX_TO_NAME
+};
+
+
+/**
+ * Text encoding translation mapping entry that declares
+ * a contiguous character range as invalid (unless
+ * mapped later on)
+ */
+struct libfonts_encoding_mapping_entry_undefined_range {
+	/**
+	 * Text encoding translation mapping entry type
+	 *
+	 * Should be `LIBFONTS_ENCODING_MAPPING_ENTRY_UNDEFINED_RANGE`
+	 * for this `struct`
+	 */
+	enum libfonts_encoding_mapping_entry_type type;
+
+	/**
+	 * The lowest character index in the invalidated range
+	 */
+	uint32_t low_source;
+
+	/**
+	 * The highest character index in the invalidated range
+	 */
+	uint32_t high_source;
+};
+
+
+/**
+ * Text encoding translation mapping entry that declares
+ * how a contiguous range of characters index are mapped
+ * into the target encoding
+ * 
+ * For each character index `i` in the range [`.low_source`,
+ * `.high_source`] in the source encoding, the index in the
+ * target encoding is `i - .low_source + .low_target`
+ */
+struct libfonts_encoding_mapping_entry_remapped_range {
+	/**
+	 * Text encoding translation mapping entry type
+	 *
+	 * Should be `LIBFONTS_ENCODING_MAPPING_ENTRY_REMAPPED_RANGE`
+	 * for this `struct`
+	 */
+	enum libfonts_encoding_mapping_entry_type type;
+
+	/**
+	 * The lowest character index, in the source
+	 * encoding, in the range of affected characters
+	 * in the mapped range
+	 */
+	uint32_t low_source;
+
+	/**
+	 * The highest character index, in the source
+	 * encoding, in the range of affected characters
+	 * in the mapped range
+	 */
+	uint32_t high_source;
+
+	/**
+	 * The lowest character index, in the target
+	 * encoding, in the range of affected characters
+	 * in the mapped range
+	 */
+	uint32_t low_target;
+};
+
+
+/**
+ * Text encoding translation mapping entry that declares
+ * which name, in the target encoding, a character in the
+ * source encoding has
+ */
+struct libfonts_encoding_mapping_entry_index_to_name {
+	/**
+	 * Text encoding translation mapping entry type
+	 *
+	 * Should be `LIBFONTS_ENCODING_MAPPING_ENTRY_INDEX_TO_NAME`
+	 * for this `struct`
+	 */
+	enum libfonts_encoding_mapping_entry_type type;
+
+	/**
+	 * The index of the character in the source encoding
+	 */
+	uint32_t source;
+
+	/**
+	 * The name of the character in the target encoding
+	 */
+	char *target;
+};
+
+
+/**
+ * Text encoding translation mapping entry
+ */
+union libfonts_encoding_mapping_entry {
+	/**
+	 * Text encoding translation mapping entry type
+	 */
+	enum libfonts_encoding_mapping_entry_type type;
+
+	/**
+	 * Used if `.type` is `LIBFONTS_ENCODING_MAPPING_ENTRY_UNDEFINED_RANGE`
+	 */
+	struct libfonts_encoding_mapping_entry_undefined_range undefined_range;
+
+	/**
+	 * Used if `.type` is `LIBFONTS_ENCODING_MAPPING_ENTRY_REMAPPED_RANGE`
+	 */
+	struct libfonts_encoding_mapping_entry_remapped_range remapped_range;
+
+	/**
+	 * Used if `.type` is `LIBFONTS_ENCODING_MAPPING_ENTRY_INDEX_TO_NAME`
+	 */
+	struct libfonts_encoding_mapping_entry_index_to_name index_to_name;
+};
+
+
+/**
+ * Structure containing text encoding a mapping
+ */
+struct libfonts_encoding_mapping {
+	/**
+	 * The name of the target encoding
+	 * 
+	 * Valid names are:
+	 * - "unicode": mapping to USC-2,
+	 * - "postscript": mapping to PostScript character names, and
+	 * - "cmap $1 $2" where $1 and $2 are numbers for the Unicode
+	 *                "cmap" tables, using in TrueType: platform ID
+	 *                ($1) and encoding ($2); "cmap 3 4" is commonly
+	 *                used and would be the Windows platforms' Big5
+	 *                encoding
+	 */
+	char *target;
+
+	/**
+	 * List of mapping entries
+	 *
+	 * Indentity mappings are normally not included
+	 */
+	union libfonts_encoding_mapping_entry *entries;
+
+	/**
+	 * The number of elements in `.entries`
+	 */
+	size_t nentries;
+};
+
+
+/**
+ * Structure containing text encoding mappings
+ * and encoding information
+ */
+struct libfonts_encoding {
+	/**
+	 * The canoncial name of the encoding
+	 */
+	char *name;
+
+	/**
+	 * List of alternative names for the encoding
+	 */
+	char **aliases;
+
+	/**
+	 * The number of elements in `.aliases`
+	 */
+	size_t naliases;
+
+	/**
+	 * List of coded translation mappings
+	 */
+	struct libfonts_encoding_mapping *mappings;
+	/* TODO add functions for creating tables in either direction */
+
+	/**
+	 * The number of elements in `.mappings`
+	 */
+	size_t nmappings;
+
+	/**
+	 * The highest valid value of the first byte
+	 * of a character, plus 1
+	 */
+	uint16_t size_rows;
+
+	/**
+	 * The highest valid value of the second byte
+	 * of a character, plus 1; or 0 if each character
+	 * one has one byte
+	 */
+	uint16_t size_cols;
+
+	/**
+	 * The value of the first byte in the lowest
+	 * valid character
+	 */
+	uint8_t first_index_row;
+
+	/**
+	 * The value of the second byte in the lowest
+	 * valid character
+	 *
+	 * Only used if `.size_cols > 0`
+	 */
+	uint8_t first_index_col;
+};
+
+
 /**
  * Structure that can be used to spoof the
  * environment the library is executed in,
@@ -1844,6 +2083,78 @@ int libfonts_parse_dir_line(char **, char **, const char *, char **);
 int libfonts_char_is_in_subset(uint32_t, const char *);
 
 /* TODO add font listing */
+
+
+/**
+ * The deallocate memory allocate for a `struct libfonts_encoding_mapping_entry_index_to_name`,
+ * but do not deallocate the `struct libfonts_encoding_mapping_entry_index_to_name` itself
+ * 
+ * @param  this  Pointer to the `struct libfonts_encoding_mapping_entry_index_to_name`
+ */
+void libfonts_deallocate_encoding_mapping_entry_index_to_name(struct libfonts_encoding_mapping_entry_index_to_name *);
+
+/**
+ * The deallocate memory allocate for a `union libfonts_encoding_mapping_entry`,
+ * but do not deallocate the `union libfonts_encoding_mapping_entry` itself
+ * 
+ * @param  this  Pointer to the `struct libfonts_encoding_mapping_entry`
+ */
+inline void
+libfonts_deallocate_encoding_mapping_entry(union libfonts_encoding_mapping_entry *this)
+{
+	if (this && this->type == LIBFONTS_ENCODING_MAPPING_ENTRY_INDEX_TO_NAME)
+		libfonts_deallocate_encoding_mapping_entry_index_to_name(&this->index_to_name);
+}
+
+/**
+ * The deallocate memory allocate for a `struct libfonts_encoding_mapping`,
+ * but do not deallocate the `struct libfonts_encoding_mapping` itself
+ * 
+ * @param  this  Pointer to the `struct libfonts_encoding_mapping`
+ */
+void libfonts_deallocate_encoding_mapping(struct libfonts_encoding_mapping *);
+
+/**
+ * The deallocate memory allocate for a `struct libfonts_encoding`,
+ * but do not deallocate the `struct libfonts_encoding` itself
+ * 
+ * @param  this  Pointer to the `struct libfonts_encoding`
+ */
+void libfonts_deallocate_encoding(struct libfonts_encoding *);
+
+/**
+ * Parse line from an encoding file and add it to an encoding structure
+ * 
+ * @param   encodingp  Pointer to a pointer to the encoding information being
+ *                     built from the encoding file; or a pointer to `NULL`
+ *                     if it shall be allocated by the function once the
+ *                     beginning of the encoding has been found.
+ *                     Unless `*encodingp` is `NULL`, it shall being as
+ *                     zero-initialised, except lists may be preallocated.
+ * @param   statep     Pointer to some memory that the function may use to
+ *                     keep track of its state; should point to 0 initially
+ * @param   line       The line to parse; parsing stops at the first newline
+ *                     or NUL byte
+ * @param   endp       Output parameter for the parsing end, i.e. the first
+ *                     newline or NUL byte in `line`
+ * @param   ctx        Optional `struct libfonts_context`
+ * @return             1 if the end of the encoding has been reached (the file
+ *                     may contain another one, which is not recommended),
+ *                     0 on success otherwise, or -1 on failure
+ * 
+ * @throws  ENOMEM  Failed to allocate required memory
+ * @throws  EINVAL  `encodingp` is `NULL`
+ * @throws  EINVAL  `*encodingp` is `NULL` but `*statep` indicates otherwise
+ * @throws  EINVAL  The contents of `*encodingp` is invalid for the value of `*statep`
+ * @throws  EINVAL  The contents of `*encodingp` is invalid
+ * @throws  EINVAL  `statep` is `NULL`
+ * @throws  EINVAL  `*statep` is invalid
+ * @throws  EINVAL  `line` is `NULL`
+ * 
+ * No memory is deallocated on failure.
+ * `*endp` is updated even on failure.
+ */
+int libfonts_parse_encoding_line(struct libfonts_encoding **, int *, const char *, char **, struct libfonts_context *);
 
 
 /**

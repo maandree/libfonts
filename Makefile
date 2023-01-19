@@ -19,6 +19,10 @@ LIB_NAME = fonts
 PUBLIC_OBJ =\
 	libfonts_calculate_subpixel_order.o\
 	libfonts_char_is_in_subset.o\
+	libfonts_deallocate_encoding.o\
+	libfonts_deallocate_encoding_mapping.o\
+	libfonts_deallocate_encoding_mapping_entry.o\
+	libfonts_deallocate_encoding_mapping_entry_index_to_name.o\
 	libfonts_decode_font_description.o\
 	libfonts_do_decoded_font_descriptions_match.o\
 	libfonts_do_font_descriptions_match.o\
@@ -32,6 +36,7 @@ PUBLIC_OBJ =\
 	libfonts_get_subpixel_order_class.o\
 	libfonts_parse_alias_line.o\
 	libfonts_parse_dir_line.o\
+	libfonts_parse_encoding_line.o\
 	libfonts_unget_subpixel_order_class.o\
 	libfonts_used_environs.o
 

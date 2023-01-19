@@ -137,10 +137,10 @@ fail:
 		*namep = NULL;
 	}
 	ret = -1;
+out:
 	if (line)
 		while (*line && *line != '\n')
 			line++;
-out:
 	if (endp)
 		*endp = *(char **)(void *)&line;
 	if (typep)
