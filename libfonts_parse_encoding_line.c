@@ -33,7 +33,7 @@ get_string(const char *s, const char **endp)
 	char *ret;
 
 	for (len = 1, p = &s[1]; *p && *p != '\n' && *p != '#'; p++)
-		len += (!isblank(*p) || isblank(p[-1]));
+		len += (!isblank(*p) || !isblank(p[-1]));
 
 	ret = malloc(len + 1);
 	if (!ret)
@@ -43,7 +43,7 @@ get_string(const char *s, const char **endp)
 	for (*r++ = *s++; *s && *s != '\n' && *s != '#'; s++) {
 		if (!isblank(*s))
 			*r++ = *s;
-		else if (isblank(s[-1]))
+		else if (!isblank(s[-1]))
 			*r++ = ' ';
 	}
 	*r = '\0';
