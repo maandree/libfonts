@@ -2132,7 +2132,9 @@ void libfonts_deallocate_encoding(struct libfonts_encoding *);
  *                     Unless `*encodingp` is `NULL`, it shall being as
  *                     zero-initialised, except lists may be preallocated.
  * @param   statep     Pointer to some memory that the function may use to
- *                     keep track of its state; should point to 0 initially
+ *                     keep track of its state; should point to 0 initially;
+ *                     if the file is complete, the value will be reset to 0
+ *                     at the end of the file
  * @param   line       The line to parse; parsing stops at the first newline
  *                     or NUL byte
  * @param   endp       Output parameter for the parsing end, i.e. the first

@@ -64,7 +64,7 @@ get_uints(uintmax_t *u1p, uintmax_t *u2p, uintmax_t *u3p, uintmax_t max,
 			if (u > (max - digit) / 10) {
 				u = max;
 				while (isdigit(*++s));
-				/* TODO warning */
+				warning(ctx, 0, "libfonts_parse_encoding_line", "value too large: in excess of 0x%jX", max);
 				break;
 			}
 			u = u * 10 + digit;
@@ -141,10 +141,8 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 		keyword = NO_KEYWORD;
 
 	if (keyword != NO_KEYWORD) {
-		if (line[keyword_len] && !isblank(line[keyword_len])) {
-			/* TODO warning */
-			goto out;
-		}
+		if (line[keyword_len] && !isblank(line[keyword_len]))
+			goto bad_keyword;
 		line = &line[keyword_len];
 		while (isblank(*line))
 			line++;
@@ -153,7 +151,7 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 	switch (keyword) {
 	case STARTENCODING:
 		if (*statep != 0) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "STARTENCODING nested inside another STARTENCODING");
 			break;
 		}
 		if (!*encodingp) {
@@ -165,24 +163,22 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 		(*encodingp)->name = get_string(line, &line);
 		if (!(*encodingp)->name)
 			goto enomem;
-		if (!*(*encodingp)->name) {
-			/* TODO warning */
-		}
+		if (!*(*encodingp)->name)
+			warning(ctx, 0, "libfonts_parse_encoding_line", "empty string as name of encoding");
 		*statep = ENCODING_LEVEL;
 		break;
 
 	case ENDENCODING:
 		if ((*statep & LEVEL_MASK) == MAPPING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "missing ENDMAPPING");
 		} else if ((*statep & LEVEL_MASK) != ENCODING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "ENDENCODING without corresponding STARTENCODING");
 			break;
 		}
-		if (*line && *line != '\n' && *line != '#') {
-			/* TODO warning */
-		}
+		if (*line && *line != '\n' && *line != '#')
+			warning(ctx, 0, "libfonts_parse_encoding_line", "unexpected data after ENDENCODING keyword");
 		if ((*statep & HAVE_FIRST_INDEX_BYTE_2_BIT) && (*encodingp)->size_cols) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "dual-byte FIRSTINDEX was combined with single-byte SIZE");
 			(*encodingp)->first_index_col = 0;
 		}
 		ret = 1;
@@ -191,7 +187,7 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 
 	case ALIAS:
 		if ((*statep & LEVEL_MASK) != ENCODING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "ALIAS keyword in wrong scope");
 			break;
 		}
 		if ((*encodingp)->naliases > SIZE_MAX / sizeof(*(*encodingp)->aliases) - 1)
@@ -203,39 +199,34 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 		(*encodingp)->aliases[(*encodingp)->naliases] = get_string(line, &line);
 		if (!(*encodingp)->aliases[(*encodingp)->naliases])
 			goto enomem;
-		if (!*(*encodingp)->aliases[(*encodingp)->naliases]) {
-			/* TODO warning */
-		}
+		if (!*(*encodingp)->aliases[(*encodingp)->naliases])
+			warning(ctx, 0, "libfonts_parse_encoding_line", "empty string as alias name of encoding");
 		(*encodingp)->naliases += 1;
 		break;
 
 	case SIZE:
 		if ((*statep & LEVEL_MASK) != ENCODING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "SIZE keyword in wrong scope");
 			break;
 		} else if (*statep & HAVE_SIZE_BIT) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "multiple SIZE declarations in encoding");
 		}
 		ju2 = 0;
 		r = get_uints(&ju1, &ju2, NULL, 0x100, line, &line, ctx);
 		if (r < 0) {
 			goto fail;
 		} else if (r == 0) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "missing numerical data");
 			break;
 		} else if (r > 2) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "excess numerical data");
 			break;
 		} else if (*line && *line != '\n' && *line != '#') {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "unexpected non-numerical data");
 			break;
 		}
-		if (!ju1) {
-			/* TODO warning */
-			break;
-		}
-		if (r > 1 && !ju2) {
-			/* TODO warning */
+		if (!ju1 || (r > 1 && !ju2)) {
+			warning(ctx, 0, "libfonts_parse_encoding_line", "invalid SIZE of zero");
 			break;
 		}
 		(*encodingp)->size_rows = (uint16_t)ju1;
@@ -245,16 +236,16 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 
 	case FIRSTINDEX:
 		if ((*statep & LEVEL_MASK) != ENCODING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "FIRSTINDEX keyword in wrong scope");
 			break;
 		} else if (*statep & HAVE_FIRST_INDEX_BIT) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "multiple FIRSTINDEX declarations in encoding");
 		}
 		r = get_uints(&ju1, &ju2, NULL, 0xFF, line, &line, ctx);
 		if (r < 0) {
 			goto fail;
 		} else if (r == 0) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "missing numerical data");
 			break;
 		} else if (r == 1) {
 			ju2 = 0;
@@ -262,11 +253,11 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 		} else if (r == 2) {
 			*statep |= HAVE_FIRST_INDEX_BYTE_2_BIT;
 		} else {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "excess numerical data");
 			break;
 		}
 		if (*line && *line != '\n' && *line != '#') {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "unexpected non-numerical data");
 			break;
 		}
 		(*encodingp)->first_index_row = (uint16_t)ju1;
@@ -276,9 +267,9 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 
 	case STARTMAPPING:
 		if ((*statep & LEVEL_MASK) == MAPPING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "missing ENDMAPPING");
 		} else if ((*statep & LEVEL_MASK) != ENCODING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "STARTMAPPING keyword in wrong scope");
 			break;
 		}
 		if ((*encodingp)->nmappings > SIZE_MAX / sizeof(*(*encodingp)->mappings) - 1)
@@ -290,47 +281,48 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 		(*encodingp)->mappings[(*encodingp)->nmappings].entries = NULL;
 		(*encodingp)->mappings[(*encodingp)->nmappings].nentries = 0;
 		(*encodingp)->mappings[(*encodingp)->nmappings].target = get_string(line, &line);
-		if (!(*encodingp)->mappings[(*encodingp)->nmappings].target) {
-			/* TODO warning */
-			break;
-		}
-		if (!*(*encodingp)->mappings[(*encodingp)->nmappings].target) {
-			/* TODO warning */
-		}
+		if (!(*encodingp)->mappings[(*encodingp)->nmappings].target)
+			goto enomem;
+		if (!*(*encodingp)->mappings[(*encodingp)->nmappings].target)
+			warning(ctx, 0, "libfonts_parse_encoding_line", "empty string as target encoding");
 		(*encodingp)->nmappings += 1;
 		*statep = (*statep & ~LEVEL_MASK) | MAPPING_LEVEL;
 		break;
 
 	case ENDMAPPING:
 		if ((*statep & LEVEL_MASK) != MAPPING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "ENDMAPPING without corresponding STARTMAPPING");
 			break;
 		}
-		if (*line && *line != '\n' && *line != '#') {
-			/* TODO warning */
-		}
+		if (*line && *line != '\n' && *line != '#')
+			warning(ctx, 0, "libfonts_parse_encoding_line", "unexpected data after ENDMAPPING keyword");
 		*statep = (*statep & ~LEVEL_MASK) | ENCODING_LEVEL;
 		break;
 
 	case UNDEFINE:
 		if ((*statep & LEVEL_MASK) != MAPPING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "UNDEFINE keyword in wrong scope");
 			break;
 		}
 		r = get_uints(&ju1, &ju2, NULL, UINT32_C(0xFFFFFFFF), line, &line, ctx);
 		if (r < 0) {
 			goto fail;
 		} else if (r == 0) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "missing numerical data");
 			break;
 		} else if (r == 1) {
 			ju2 = ju1;
-		} else if (r > 2) {
-			/* TODO warning */
+		} else if (r == 2) {
+			if (ju2 < ju1) {
+				warning(ctx, 0, "libfonts_parse_encoding_line", "reversed range");
+				break;
+			}
+		} else {
+			warning(ctx, 0, "libfonts_parse_encoding_line", "excess numerical data");
 			break;
 		}
 		if (*line && *line != '\n' && *line != '#') {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "unexpected non-numerical data");
 			break;
 		}
 		mapping = &(*encodingp)->mappings[(*encodingp)->nmappings - 1];
@@ -348,18 +340,18 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 
 	case NO_KEYWORD:
 		if ((*statep & LEVEL_MASK) != MAPPING_LEVEL) {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "index mapping in wrong scope");
 			break;
 		}
 		r = get_uints(&ju1, &ju2, &ju3, UINT32_C(0xFFFFFFFF), line, &line, ctx);
 		if (r < 0) {
 			goto fail;
 		} else if (r == 0) {
-			/* TODO warning internal error */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "internal error");
 			break;
 		} else if (r == 1) {
 			if (!*line || *line == '\n' || *line == '#') {
-				/* TODO warning */
+				warning(ctx, 0, "libfonts_parse_encoding_line", "missing data");
 				break;
 			}
 		} else if (r == 2) {
@@ -367,15 +359,15 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 			ju2 = ju1;
 		} else if (r == 3) {
 			if (ju2 < ju1) {
-				/* TODO warning */
+				warning(ctx, 0, "libfonts_parse_encoding_line", "reversed range");
 				break;
 			}
 		} else {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "excess numerical data");
 			break;
 		}
 		if (r != 1 && *line && *line != '\n' && *line != '#') {
-			/* TODO warning */
+			warning(ctx, 0, "libfonts_parse_encoding_line", "unexpected non-numerical data");
 			break;
 		}
 
@@ -402,7 +394,7 @@ libfonts_parse_encoding_line(struct libfonts_encoding **encodingp, int *statep,
 		break;
 
 	default:
-		/* TODO warning internal error */
+		warning(ctx, 0, "libfonts_parse_encoding_line", "internal error");
 		break;
 	}
 
@@ -421,7 +413,7 @@ fail:
 	goto out;
 
 bad_keyword:
-	/* TODO warning */
+	warning(ctx, 0, "libfonts_parse_encoding_line", "unrecognised keyword");
 	goto out;
 }
 
