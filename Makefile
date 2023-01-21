@@ -19,6 +19,7 @@ LIB_NAME = fonts
 PUBLIC_OBJ =\
 	libfonts_calculate_subpixel_order.o\
 	libfonts_char_is_in_subset.o\
+	libfonts_create_transcoding_table.o\
 	libfonts_deallocate_encoding.o\
 	libfonts_deallocate_encoding_mapping.o\
 	libfonts_deallocate_encoding_mapping_entry.o\

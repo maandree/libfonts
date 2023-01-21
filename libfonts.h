@@ -13,6 +13,13 @@
 #define LIBFONTS_CONTEXT_VERSION 0
 
 /**
+ * Target character index used to signify that the
+ * source character index is invalid or has not
+ * mapping to the target encoding
+ */
+#define LIBFONTS_UNDEFINED_CHAR (UINT32_C(0xFFFFFFFF))
+
+/**
  * File name of file in font directories that is used
  * to create font aliases
  */
@@ -1866,7 +1873,6 @@ struct libfonts_encoding {
 	 * List of coded translation mappings
 	 */
 	struct libfonts_encoding_mapping *mappings;
-	/* TODO add functions for creating tables in either direction */
 
 	/**
 	 * The number of elements in `.mappings`
@@ -1900,6 +1906,65 @@ struct libfonts_encoding {
 	 */
 	uint8_t first_index_col;
 };
+
+
+/**
+ * Lookup table for translating from one
+ * text encoding into another
+ */
+struct libfonts_transcoding_table {
+	/**
+	 * Source character indices lower than
+	 * this value should be rejected without
+	 * looking in `.table`
+	 */
+	uint32_t first_valid;
+
+	/**
+	 * Source character indices higher than
+	 * this value should be rejected without
+	 * looking in `.table`
+	 */
+	uint32_t last_valid;
+
+	/**
+	 * See `.table`
+	 */
+	uint32_t offset;
+
+	/**
+	 * See `.table`
+	 * 
+	 * If this value is 0, the source encoding uses one byte
+	 * per character, otherwise it uses two bytes per character
+	 */
+	uint32_t multiplier;
+
+	/**
+	 * For a source character index `i`, the target character index is
+	 * `.table[((i - .offset) >> 8) * .multiplier + ((i - .offset) & 0xFF)]`
+	 * (`LIBFONTS_LOOKUP_TRANSCODING_TABLE` performs this lookup);
+	 * however, if this value is `LIBFONTS_UNDEFINED_CHAR`, the
+	 * character has no mapping: either `i` is an invalid character
+	 * index in the source encoding, or the corresponding character
+	 * does not exist in the target encoding
+	 */
+	uint32_t table[];
+};
+
+
+/**
+ * Converts a source character index to a target character index
+ * via a transcoding table
+ *
+ * @param   TABLE:const struct libfonts_transcoding_table *  The transcoding table
+ * @param   I:uint32_t                                       The source character index
+ * @return  :uint32_t                                        The target character index, or
+ *                                                           `LIBFONTS_UNDEFINED_CHAR` if there is no mapping
+ */
+#define LIBFONTS_LOOKUP_TRANSCODING_TABLE(TABLE, I)\
+	((TABLE)->table[(((uint32_t)(I) - (TABLE)->offset) >> 8) * (TABLE)->multiplier +\
+	                (((uint32_t)(I) - (TABLE)->offset) & 0xFF)])
 
 
 /**
@@ -2157,6 +2222,24 @@ void libfonts_deallocate_encoding(struct libfonts_encoding *);
  * `*endp` is updated even on failure.
  */
 int libfonts_parse_encoding_line(struct libfonts_encoding **, int *, const char *, char **, struct libfonts_context *);
+
+/**
+ * Create a transcoding table
+ *
+ * @param   encoding  The source encoding
+ * @param   mapping   The index in `encoding->mappings` for the target encoding
+ * @return            Transcoding table, deallocatable with free(3), or `NULL` on failure
+ * 
+ * @throws  ENOMEM  Failed to allocate enough memory
+ * @throws  EINVAL  `encoding` is `NULL`
+ * @throws  EINVAL  `mapping` is equal to or greater than `encoding->nmappings`
+ * @throws  EINVAL  The contents of `encoding` is invalid
+ * @throws  EINVAL  One of the entries in the mapping has the
+ *                  `LIBFONTS_ENCODING_MAPPING_ENTRY_INDEX_TO_NAME` type
+ */
+struct libfonts_transcoding_table *libfonts_create_transcoding_table(const struct libfonts_encoding *, size_t);
+
+/* TODO add libfonts_create_reverse_transcoding_table */
 
 
 /**
