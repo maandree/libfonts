@@ -2465,5 +2465,36 @@ int libfonts_unget_subpixel_order_class(enum libfonts_subpixel_order *,
  */
 int libfonts_get_subpixel_expansion(enum libfonts_subpixel_order_class, size_t *restrict, size_t *restrict);
 
+/**
+ * Get the abstract colour layout for a subpixel structure
+ * 
+ * @param  layout   The subpixel layout
+ * @param  rowsize  A value such that `y * rowsize + x` is the position
+ *                  `map` for the vertical position `y` (counted top-down from 0)
+ *                   with the horizontal position `x` (counted left-to-right from 0)
+ * @param  map      Output buffer for the subpixel mapping in the layout: where
+ *                  each cell (there may be multiple) set to the value 0 has the colour
+ *                  output in the second parameter of `libfonts_get_subpixel_order_class`,
+ *                  each cell (there may be multiple) set to the value 1 has the colour
+ *                  output in the third parameter of `libfonts_get_subpixel_order_class`,
+ *                  and each cell (there may be multiple) set to the value 2 has the colour
+ *                  output in the fourth parameter of `libfonts_get_subpixel_order_class`;
+ *                  each cell will be given one of these values. The map's width and height
+ *                  is assumed to be the width and height multipliers, respectively, as
+ *                  output by `libfonts_get_subpixel_expansion`
+ * @param   n0p     Output parameter for the number of cells given the value 0
+ * @param   n1p     Output parameter for the number of cells given the value 1
+ * @param   n2p     Output parameter for the number of cells given the value 2
+ * @return          0 on success, -1 on failure
+ * 
+ * @throws  EINVAL  `layout` is `LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER`
+ * @throws  EINVAL  `layout` is unrecognised
+ * @throws  EINVAL  `rowsize` is less than the width multiplier output by
+ *                  `libfonts_get_subpixel_expansion` (this is however only
+ *                  checked if it is used)
+ */
+int libfonts_get_subpixel_map(enum libfonts_subpixel_order_class, size_t, uint8_t *restrict,
+                              uint8_t *restrict, uint8_t *restrict, uint8_t *restrict);
+
 
 #endif
