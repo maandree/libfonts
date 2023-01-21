@@ -1398,6 +1398,7 @@ struct libfonts_rendering_settings {
 	 */
 	enum libfonts_antialiasing diagonal_colour_text_antialiasing;
 };
+/* TODO add subpixel saturation configuration */
 
 
 /**
@@ -1476,6 +1477,7 @@ struct libfonts_output {
 	 */
 	struct libfonts_rendering_settings *rendering_settings;
 };
+/* TODO add colour space */
 
 
 /**
