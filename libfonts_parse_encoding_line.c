@@ -59,16 +59,45 @@ get_uints(uintmax_t *u1p, uintmax_t *u2p, uintmax_t *u3p, uintmax_t max,
 
 	while (r < INT_MAX && isdigit(*s)) {
 		u = 0;
-		do {
-			digit = (uintmax_t)(*s & 15);
-			if (u > (max - digit) / 10) {
-				u = max;
-				while (isdigit(*++s));
-				warning(ctx, 0, "libfonts_parse_encoding_line", "value too large: in excess of 0x%jX", max);
-				break;
+
+		if (s[0] == '0' && (s[1] == 'x' || s[1] == 'X') && isxdigit(s[2])) {
+			s = &s[2];
+			do {
+				digit = (uintmax_t)((*s & 15) + (*s > '9' ? 9 : 0));
+				if (u > (max - digit) >> 4)
+					goto overflow;
+				u = (u << 4) | digit;
+			} while (isxdigit(*++s));
+
+		} else if (s[0] == '0') {
+			s = &s[1];
+			for (;; s++) {
+				digit = (uintmax_t)(unsigned char)(*s - '0');
+				if (digit > 7)
+					break;
+				if (u > (max - digit) >> 3)
+					goto overflow;
+				u = (u << 3) | digit;
 			}
-			u = u * 10 + digit;
-		} while (isdigit(*++s));
+
+		} else if (isdigit(s[0])) {
+			do {
+				digit = (uintmax_t)(*s & 15);
+				if (u > (max - digit) / 10)
+					goto overflow;
+				u = u * 10 + digit;
+			} while (isdigit(*++s));
+
+		} else {
+			break;
+		}
+
+		if (0) {
+		overflow:
+			u = max;
+			while (isdigit(*++s));
+			warning(ctx, 0, "libfonts_parse_encoding_line", "value too large: in excess of 0x%jX", max);
+		}
 
 		up = (r == 0 ? u1p :
 		      r == 1 ? u2p :
