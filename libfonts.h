@@ -303,7 +303,8 @@ enum libfonts_subpixel_order_class {
 	 *
 	 * Cells 2 and 3 have the aspect ratio
 	 * (width to height) 3:4 and cell 1 has
-	 * the aspect ratio 6:2
+	 * the aspect ratio 6:2; cell 1 occupies
+	 * a third of the pixel's height
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_11_23,
 
@@ -322,7 +323,8 @@ enum libfonts_subpixel_order_class {
 	 *
 	 * Cells 2 and 3 have the aspect ratio
 	 * (width to height) 4:3 and cell 1 has
-	 * the aspect ratio 2:6
+	 * the aspect ratio 2:6; cell 1 occupies
+	 * a third of the pixel's width
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_21_31,
 
@@ -341,7 +343,8 @@ enum libfonts_subpixel_order_class {
 	 *
 	 * Cells 2 and 3 have the aspect ratio
 	 * (width to height) 3:4 and cell 1 has
-	 * the aspect ratio 6:2
+	 * the aspect ratio 6:2; cell 1 occupies
+	 * a third of the pixel's height
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_32_11,
 
@@ -360,7 +363,8 @@ enum libfonts_subpixel_order_class {
 	 *
 	 * Cells 2 and 3 have the aspect ratio
 	 * (width to height) 4:3 and cell 1 has
-	 * the aspect ratio 2:6
+	 * the aspect ratio 2:6; cell 1 occupies
+	 * a third of the pixel's width
 	 */
 	LIBFONTS_SUBPIXEL_ORDER_CLASS_BALANCED_13_12
 };
@@ -2440,6 +2444,26 @@ int libfonts_unget_subpixel_order_class(enum libfonts_subpixel_order *,
                                         enum libfonts_subpixel_colour,
                                         enum libfonts_subpixel_colour,
                                         enum libfonts_subpixel_colour);
+
+/**
+ * Get the width and height multipliers needed to
+ * turn a raster of pixel cells into a raster of
+ * subpixel cells
+ *
+ * `*widthmulp` * `*heightmulp` will never exceed
+ * `SIZE_MAX` (or even be close to it)
+ * 
+ * @param   layout      The subpixel layout
+ * @param   widthmulp   Output parameter for the width multiplier,
+ *                      this value is always positive
+ * @param   heightmulp  Output parameter for the height multiplier,
+ *                      this value is always positive
+ * @return              0 on success, -1 on failure
+ * 
+ * @throws  EINVAL  `layout` is `LIBFONTS_SUBPIXEL_ORDER_CLASS_OTHER`
+ * @throws  EINVAL  `layout` is unrecognised
+ */
+int libfonts_get_subpixel_expansion(enum libfonts_subpixel_order_class, size_t *restrict, size_t *restrict);
 
 
 #endif
