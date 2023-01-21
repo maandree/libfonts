@@ -57,7 +57,7 @@ get_uints(uintmax_t *u1p, uintmax_t *u2p, uintmax_t *u3p, uintmax_t max,
 	int r = 0;
 	uintmax_t u, *up, digit;
 
-	while (r < INT_MAX && isdigit(*s)) {
+	while (r < INT_MAX) {
 		u = 0;
 
 		if (s[0] == '0' && (s[1] == 'x' || s[1] == 'X') && isxdigit(s[2])) {
