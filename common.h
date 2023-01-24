@@ -187,8 +187,8 @@ int libfonts_parse_aa__(enum libfonts_antialiasing *outp, const char *value);
 	} while (0)
 
 
-#if defined(__clang__)
-# pragma clang diagnostic ignored "-Wassign-enum"
-#endif
+# if defined(__clang__)
+#  pragma clang diagnostic ignored "-Wassign-enum"
+# endif
 
 #endif
